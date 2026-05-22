@@ -1,0 +1,1 @@
+export const GENKI_1_CHAPTERS = Array.from({ length: 12 }, (_, index) => index + 1);

@@ -1,26 +1,439 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+* {
+  box-sizing: border-box;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  margin: 0;
+  min-height: 100vh;
+  color: #173763;
   font-family: Arial, Helvetica, sans-serif;
+  background: #fffdfa url("/bg.png");
+  background-size: cover;
+  background-position: top center;
+  background-attachment: fixed;
+}
+
+::selection {
+  background: #bfdbfe;
+  color: #173763;
+}
+
+@keyframes softPop {
+  0% {
+    transform: scale(0.97);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.soft-pop {
+  animation: softPop 220ms ease-out;
+}
+
+@keyframes matchaButtonShine {
+  0% {
+    left: -80px;
+    opacity: 0;
+  }
+
+  8% {
+    opacity: 1;
+  }
+
+  22% {
+    left: calc(100% + 80px);
+    opacity: 0;
+  }
+
+  100% {
+    left: calc(100% + 80px);
+    opacity: 0;
+  }
+}
+
+.matcha-button-shine {
+  animation: matchaButtonShine 8s ease-in-out infinite;
+}
+
+/* Genki 2 desktop hover + mobile tap effect */
+.jojo-hover-wrap {
+  transform: translateX(145%);
+  opacity: 0;
+  transition:
+    transform 520ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 260ms ease-out;
+}
+
+/* Desktop hover only, so mobile hover does not get stuck */
+@media (hover: hover) and (pointer: fine) {
+  .genki2-card:hover {
+    transform: translateY(-0.25rem);
+  }
+
+  .genki2-card:hover .genki2-grey {
+    opacity: 1;
+  }
+
+  .genki2-card:hover .genki2-content {
+    opacity: 0.35;
+  }
+
+  .genki2-card:hover .jojo-hover-wrap {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile tap effect */
+.mobile-jojo-active .genki2-grey {
+  opacity: 1;
+}
+
+.mobile-jojo-active .genki2-content {
+  opacity: 0.35;
+}
+
+.mobile-jojo-active .jojo-hover-wrap {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Mobile text size/position */
+@media (max-width: 640px) {
+  .jojo-hover-wrap {
+    right: 10px !important;
+  }
+
+  .jojo-hover-wrap p:first-child {
+    font-size: 10px;
+  }
+
+  .jojo-hover-wrap p:last-child {
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* Mobile Kanji bottom menu */
+.kanji-mobile-menu {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition:
+    opacity 160ms ease,
+    transform 200ms ease;
+}
+
+.kanji-mobile-option {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.94);
+  transition:
+    opacity 220ms ease,
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kanji-mobile-toggle:checked ~ .kanji-mobile-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.kanji-mobile-toggle:checked ~ .kanji-mobile-menu .kanji-mobile-option {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.kanji-mobile-toggle:checked ~ .kanji-mobile-menu .kanji-mobile-option-1 {
+  transition-delay: 40ms;
+}
+
+.kanji-mobile-toggle:checked ~ .kanji-mobile-menu .kanji-mobile-option-2 {
+  transition-delay: 110ms;
+}
+
+.kanji-mobile-toggle:checked ~ .kanji-mobile-menu .kanji-mobile-option-3 {
+  transition-delay: 180ms;
+}
+
+@keyframes mobileModalOptionPop {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.mobile-modal-option {
+  opacity: 0;
+  animation: mobileModalOptionPop 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* About page animations */
+@keyframes aboutTitleIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes aboutTextIn {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes aboutBulletPop {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes aboutCharacterIn {
+  0% {
+    opacity: 0;
+    transform: translateX(42px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.about-title-in {
+  animation: aboutTitleIn 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.about-text-in {
+  animation: aboutTextIn 520ms ease-out 140ms both;
+}
+
+.about-bullet-1 {
+  animation: aboutBulletPop 420ms cubic-bezier(0.16, 1, 0.3, 1) 280ms both;
+}
+
+.about-bullet-2 {
+  animation: aboutBulletPop 420ms cubic-bezier(0.16, 1, 0.3, 1) 400ms both;
+}
+
+.about-character-in {
+  animation: aboutCharacterIn 650ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both;
+}
+
+/* Contact page animations */
+@keyframes contactPageIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes contactTitleIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes contactFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes contactFormIn {
+  0% {
+    opacity: 0;
+    transform: translateX(70px) scale(0.94);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.contact-page-in {
+  animation: contactPageIn 420ms ease-out both;
+}
+
+.contact-title-in {
+  animation: contactTitleIn 850ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.contact-text-in {
+  animation: contactFadeUp 700ms cubic-bezier(0.16, 1, 0.3, 1) 220ms both;
+}
+
+.contact-note-in {
+  animation: contactFadeUp 700ms cubic-bezier(0.16, 1, 0.3, 1) 360ms both;
+}
+
+.contact-form-in {
+  animation: contactFormIn 850ms cubic-bezier(0.16, 1, 0.3, 1) 280ms both;
+}
+
+/* Home page animations */
+@keyframes homeTitleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-26px) scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes homeSubtitleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes homeCardIn {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes homeBookFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-5px) rotate(-2deg);
+  }
+}
+
+.home-title-in {
+  animation: homeTitleIn 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.home-subtitle-in {
+  animation: homeSubtitleIn 620ms cubic-bezier(0.16, 1, 0.3, 1) 160ms both;
+}
+
+.home-card-1 {
+  animation: homeCardIn 520ms cubic-bezier(0.16, 1, 0.3, 1) 320ms both;
+}
+
+.home-card-2 {
+  animation: homeCardIn 520ms cubic-bezier(0.16, 1, 0.3, 1) 440ms both;
+}
+
+.home-book-float {
+  animation: homeBookFloat 3.5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* Chapter practice page animations */
+@keyframes chapterBackIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes chapterTitleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-22px) scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes chapterSubtitleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chapter-back-in {
+  animation: chapterBackIn 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.chapter-title-in {
+  animation: chapterTitleIn 620ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
+}
+
+.chapter-subtitle-in {
+  animation: chapterSubtitleIn 560ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both;
 }
