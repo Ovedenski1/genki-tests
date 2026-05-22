@@ -64,20 +64,20 @@ function AdminDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.bookNumber, filters.chapterNumber, filters.wordType]);
 
-  const title = `Genki ${filters.bookNumber} · Chapter ${filters.chapterNumber} · ${
-    filters.wordType === "vocab" ? "Vocab" : "Kanji"
-  }`;
+  const title = `Genki ${filters.bookNumber} · Chapter ${
+    filters.chapterNumber
+  } · ${filters.wordType === "vocab" ? "Vocab" : "Kanji"}`;
 
   return (
-    <PageShell>
-      <div className="mx-auto max-w-6xl 2xl:max-w-[1500px]">
-        <div className="mb-8 flex items-start justify-between gap-4 sm:mb-10">
+    <PageShell className="overflow-hidden py-3 sm:py-4 lg:py-5">
+      <div className="mx-auto max-w-[920px]">
+        <div className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <p className="text-base font-black uppercase tracking-[0.3em] text-[#6d94d2] sm:text-lg 2xl:text-xl">
+            <p className="text-xs font-black uppercase tracking-[0.35em] text-[#6d94d2]">
               Admin
             </p>
 
-            <h1 className="mt-3 text-4xl font-black tracking-tight text-[#173763] sm:text-5xl 2xl:text-6xl">
+            <h1 className="mt-1.5 text-3xl font-black tracking-tight text-[#173763] sm:text-[34px] lg:text-[38px]">
               {title}
             </h1>
           </div>
@@ -85,19 +85,19 @@ function AdminDashboard() {
           <Button
             variant="secondary"
             onClick={signOut}
-            className="mt-8 shrink-0"
+            className="mt-4 shrink-0 px-4 py-2 text-xs sm:text-sm"
           >
             Sign out
           </Button>
         </div>
 
         {error ? (
-          <Card className="mb-6 p-5 font-black text-rose-600">
+          <Card className="mb-4 p-3 text-sm font-black text-rose-600">
             {error}
           </Card>
         ) : null}
 
-        <div className="grid items-start justify-center gap-8 xl:grid-cols-[420px_auto] xl:justify-start 2xl:grid-cols-[520px_auto]">
+        <div className="grid items-start justify-center gap-4 xl:grid-cols-[285px_minmax(0,1fr)] xl:justify-start">
           <AdminWordForm
             editing={editing}
             filters={filters}
@@ -112,7 +112,7 @@ function AdminDashboard() {
           />
 
           {loading ? (
-            <Card className="w-full p-10 text-center text-2xl font-black xl:w-[620px]">
+            <Card className="w-full p-6 text-center text-lg font-black">
               Loading words...
             </Card>
           ) : (

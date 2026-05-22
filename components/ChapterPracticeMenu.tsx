@@ -31,7 +31,7 @@ export function ChapterPracticeMenu({ base }: { base: string }) {
 
   return (
     <>
-      <div className="mx-auto mt-10 grid max-w-4xl grid-cols-2 gap-4 sm:mt-14 sm:gap-8 lg:gap-12">
+      <div className="mx-auto mt-8 grid w-full max-w-[760px] grid-cols-2 gap-4 sm:mt-9 sm:gap-7 lg:gap-8">
         <div
           className={`h-full transition-all duration-700 ease-out ${cardAnimation}`}
           style={{ transitionDelay: "220ms" }}
@@ -52,26 +52,26 @@ export function ChapterPracticeMenu({ base }: { base: string }) {
           <button
             type="button"
             onClick={openMobileModal}
-            className="flex h-full w-full flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-4 py-10 text-center text-white shadow-xl shadow-blue-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:px-10 sm:py-14 lg:px-16 lg:py-16"
+            className="flex h-[220px] w-full flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-4 text-center text-white shadow-xl shadow-blue-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[250px] lg:h-[285px]"
           >
-            <div className="home-book-float mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 border-white text-white sm:h-16 sm:w-16 lg:h-20 lg:w-20">
-              <KanjiIcon className="text-4xl font-black leading-none sm:text-5xl lg:text-6xl" />
+            <div className="home-book-float mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 border-white text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+              <KanjiIcon className="text-4xl font-black leading-none sm:text-5xl" />
             </div>
 
-            <h2 className="mt-5 text-3xl font-black sm:mt-8 sm:text-4xl lg:text-5xl">
+            <h2 className="mt-5 text-3xl font-black sm:mt-6 sm:text-4xl">
               Kanji
             </h2>
 
-            <p className="mt-4 hidden text-lg text-white/90 sm:block lg:mt-8 lg:text-xl">
+            <p className="mt-4 hidden max-w-[230px] text-base leading-snug text-white/90 sm:block lg:mt-6 lg:text-lg">
               Study kanji from this chapter.
             </p>
           </button>
 
-          <div className="pointer-events-none absolute left-full top-0 z-40 hidden h-full w-36 pl-3 opacity-0 transition-opacity duration-150 group-hover/kanji:pointer-events-auto group-hover/kanji:opacity-100 md:block lg:w-40">
+          <div className="pointer-events-none absolute left-full top-0 z-40 hidden h-full w-32 pl-3 opacity-0 transition-opacity duration-150 group-hover/kanji:pointer-events-auto group-hover/kanji:opacity-100 md:block lg:w-36">
             <div className="grid h-full grid-rows-3 gap-2">
               <Link
                 href={`${base}/kanji?mode=vocab`}
-                className="flex translate-x-6 scale-90 items-center justify-center rounded-xl bg-gradient-to-br from-[#9bcc99] to-[#78b978] text-lg font-black text-white opacity-0 shadow-xl shadow-green-300/50 transition duration-200 ease-out hover:-translate-y-0.5 hover:brightness-105 group-hover/kanji:translate-x-0 group-hover/kanji:scale-100 group-hover/kanji:opacity-100"
+                className="flex translate-x-6 scale-90 items-center justify-center rounded-xl bg-gradient-to-br from-[#9bcc99] to-[#78b978] text-base font-black text-white opacity-0 shadow-xl shadow-green-300/50 transition duration-200 ease-out hover:-translate-y-0.5 hover:brightness-105 group-hover/kanji:translate-x-0 group-hover/kanji:scale-100 group-hover/kanji:opacity-100"
                 style={{ transitionDelay: "40ms" }}
               >
                 Vocab
@@ -79,7 +79,7 @@ export function ChapterPracticeMenu({ base }: { base: string }) {
 
               <Link
                 href={`${base}/kanji?mode=back`}
-                className="flex translate-x-6 scale-90 items-center justify-center rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] text-lg font-black text-white opacity-0 shadow-xl shadow-blue-300/50 transition duration-200 ease-out hover:-translate-y-0.5 hover:brightness-105 group-hover/kanji:translate-x-0 group-hover/kanji:scale-100 group-hover/kanji:opacity-100"
+                className="flex translate-x-6 scale-90 items-center justify-center rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] text-base font-black text-white opacity-0 shadow-xl shadow-blue-300/50 transition duration-200 ease-out hover:-translate-y-0.5 hover:brightness-105 group-hover/kanji:translate-x-0 group-hover/kanji:scale-100 group-hover/kanji:opacity-100"
                 style={{ transitionDelay: "110ms" }}
               >
                 Back
@@ -87,7 +87,7 @@ export function ChapterPracticeMenu({ base }: { base: string }) {
 
               <Link
                 href={`${base}/kanji`}
-                className="flex translate-x-6 scale-90 items-center justify-center rounded-xl bg-gradient-to-br from-[#c7a4ff] to-[#8b7cf6] text-lg font-black text-white opacity-0 shadow-xl shadow-violet-300/50 transition duration-200 ease-out hover:-translate-y-0.5 hover:brightness-105 group-hover/kanji:translate-x-0 group-hover/kanji:scale-100 group-hover/kanji:opacity-100"
+                className="flex translate-x-6 scale-90 items-center justify-center rounded-xl bg-gradient-to-br from-[#c7a4ff] to-[#8b7cf6] text-base font-black text-white opacity-0 shadow-xl shadow-violet-300/50 transition duration-200 ease-out hover:-translate-y-0.5 hover:brightness-105 group-hover/kanji:translate-x-0 group-hover/kanji:scale-100 group-hover/kanji:opacity-100"
                 style={{ transitionDelay: "180ms" }}
               >
                 All

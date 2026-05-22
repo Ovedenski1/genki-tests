@@ -22,21 +22,21 @@ export function PracticeCard({
   return (
     <Link
       href={href}
-      className={`flex h-full w-full flex-col items-center justify-center rounded-xl px-4 py-10 text-center text-white shadow-xl transition hover:-translate-y-1 hover:brightness-105 sm:px-10 sm:py-14 lg:px-16 lg:py-16 ${styles}`}
+      className={`flex h-[220px] w-full flex-col items-center justify-center rounded-xl px-4 text-center text-white shadow-xl transition hover:-translate-y-1 hover:brightness-105 sm:h-[250px] lg:h-[285px] ${styles}`}
     >
       {icon === "book" ? (
-        <OpenBookIcon className="mx-auto h-12 w-12 text-white drop-shadow sm:h-16 sm:w-16 lg:h-20 lg:w-20" />
+        <OpenBookIcon className="mx-auto h-12 w-12 text-white drop-shadow sm:h-14 sm:w-14 lg:h-16 lg:w-16" />
       ) : (
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 border-white text-white sm:h-16 sm:w-16 lg:h-20 lg:w-20">
-          <KanjiIcon className="text-4xl font-black leading-none sm:text-5xl lg:text-6xl" />
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 border-white text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+          <KanjiIcon className="text-4xl font-black leading-none sm:text-5xl" />
         </div>
       )}
 
-      <h2 className="mt-5 text-3xl font-black sm:mt-8 sm:text-4xl lg:text-5xl">
+      <h2 className="mt-5 text-3xl font-black sm:mt-6 sm:text-4xl">
         {title}
       </h2>
 
-      <p className="mt-4 hidden text-lg text-white/90 sm:block lg:mt-8 lg:text-xl">
+      <p className="mt-4 hidden max-w-[230px] text-base leading-snug text-white/90 sm:block lg:mt-6 lg:text-lg">
         {description}
       </p>
     </Link>

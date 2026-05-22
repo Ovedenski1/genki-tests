@@ -1,15 +1,17 @@
 export function Footer() {
   return (
-    <footer className="relative mt-auto border-t border-slate-100 bg-[#f7f0e7]/95 px-4 py-5 text-[#173763] sm:py-6 2xl:py-8">
-      <p className="text-center text-sm tracking-widest sm:text-base 2xl:text-lg">
-        Pokotoba is an unofficial fan project. It is not affiliated with, endorsed by, or connected to the GENKI textbooks, their authors, or their publisher!
+    <footer className="relative mt-auto border-t border-slate-100 bg-[#f7f0e7]/95 px-4 py-3 text-[#173763] sm:py-3">
+      <p className="text-center text-[11px] tracking-widest sm:text-xs">
+        Pokotoba is an unofficial fan project. It is not affiliated with,
+        endorsed by, or connected to the GENKI textbooks, their authors, or
+        their publisher!
       </p>
 
-      <p className="mt-3 text-center text-[10px] text-slate-500 sm:absolute sm:left-6 sm:top-1/2 sm:mt-0 sm:-translate-y-1/2 sm:text-left sm:text-xs 2xl:left-8">
-        © {new Date().getFullYear()} Genki Study Desk
+      <p className="mt-2 text-center text-[9px] text-slate-500 sm:absolute sm:left-5 sm:top-1/2 sm:mt-0 sm:-translate-y-1/2 sm:text-left sm:text-[10px]">
+        © {new Date().getFullYear()} Pokotoba
       </p>
 
-      <p className="mt-2 text-center text-[10px] text-slate-500 sm:absolute sm:right-6 sm:top-1/2 sm:mt-0 sm:-translate-y-1/2 sm:text-right sm:text-xs 2xl:right-8">
+      <p className="mt-1 text-center text-[9px] text-slate-500 sm:absolute sm:right-5 sm:top-1/2 sm:mt-0 sm:-translate-y-1/2 sm:text-right sm:text-[10px]">
         Matcha icon by{" "}
         <a
           href="https://www.flaticon.com/free-animated-icons/matcha"

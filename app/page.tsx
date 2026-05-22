@@ -43,9 +43,9 @@ export default function HomePage() {
 
   return (
     <main className="flex flex-1 items-center justify-center">
-      <section className="mx-auto flex max-w-5xl flex-col items-center px-4 py-10 text-center sm:px-6 sm:py-16 lg:py-20 2xl:max-w-7xl">
+      <section className="mx-auto flex min-h-[calc(100svh-175px)] w-full max-w-6xl flex-col items-center justify-center px-4 pb-8 pt-6 text-center sm:px-6 sm:pb-10 sm:pt-8">
         <h1
-          className={`text-4xl font-black leading-tight tracking-wide text-[#173763] drop-shadow-sm transition-all duration-700 ease-out sm:text-6xl lg:text-7xl 2xl:text-8xl ${titleAnimation}`}
+          className={`text-4xl font-black leading-tight tracking-wide text-[#173763] drop-shadow-sm transition-all duration-700 ease-out sm:text-6xl lg:text-7xl ${titleAnimation}`}
         >
           Learn Japanese
           <br />
@@ -53,32 +53,32 @@ export default function HomePage() {
         </h1>
 
         <p
-          className={`mt-5 max-w-3xl text-base leading-relaxed text-slate-600 transition-all duration-700 ease-out sm:mt-8 sm:text-2xl lg:text-3xl 2xl:max-w-5xl 2xl:text-4xl ${textAnimation}`}
+          className={`mt-5 max-w-4xl text-base leading-relaxed text-slate-600 transition-all duration-700 ease-out sm:mt-6 sm:text-2xl lg:text-3xl ${textAnimation}`}
           style={{ transitionDelay: "140ms" }}
         >
           A free, unofficial study helper for practicing Japanese vocabulary and
           kanji through typing.
         </p>
 
-        <div className="mt-8 grid w-full max-w-4xl grid-cols-2 gap-4 sm:mt-12 sm:gap-8 lg:gap-10 2xl:max-w-6xl 2xl:gap-14">
+        <div className="mt-8 grid w-full max-w-[820px] grid-cols-2 gap-5 sm:mt-10 sm:gap-10">
           <div
-            className={`h-full transition-all duration-700 ease-out ${cardAnimation}`}
+            className={`transition-all duration-700 ease-out ${cardAnimation}`}
             style={{ transitionDelay: "280ms" }}
           >
             <Link
               href="/genki/1/chapters"
-              className="block h-full rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-4 py-8 text-white shadow-xl shadow-blue-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:px-10 sm:py-10 lg:px-20 2xl:py-16"
+              className="flex h-[155px] flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-4 text-white shadow-xl shadow-blue-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[195px] lg:h-[215px]"
             >
-              <OpenBookIcon className="home-book-float mx-auto h-10 w-10 text-white drop-shadow sm:h-14 sm:w-14 lg:h-16 lg:w-16 2xl:h-20 2xl:w-20" />
+              <OpenBookIcon className="home-book-float mx-auto h-10 w-10 text-white drop-shadow sm:h-12 sm:w-12 lg:h-14 lg:w-14" />
 
-              <div className="mt-4 text-2xl font-black sm:mt-6 sm:text-3xl lg:text-4xl 2xl:text-5xl">
+              <div className="mt-4 text-2xl font-black sm:mt-5 sm:text-3xl lg:text-4xl">
                 Genki 1
               </div>
             </Link>
           </div>
 
           <div
-            className={`h-full transition-all duration-700 ease-out ${cardAnimation}`}
+            className={`transition-all duration-700 ease-out ${cardAnimation}`}
             style={{ transitionDelay: "420ms" }}
           >
             <div
@@ -92,27 +92,27 @@ export default function HomePage() {
                   handleGenki2Click();
                 }
               }}
-              className={`genki2-card relative h-full cursor-not-allowed overflow-hidden rounded-xl bg-gradient-to-br from-[#9bcc99] to-[#78b978] px-4 py-8 text-white shadow-xl shadow-green-300/50 transition sm:px-10 sm:py-10 lg:px-20 2xl:py-16 ${
+              className={`genki2-card relative flex h-[155px] cursor-not-allowed flex-col items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-[#9bcc99] to-[#78b978] px-4 text-white shadow-xl shadow-green-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[195px] lg:h-[215px] ${
                 mobileJojoActive ? "mobile-jojo-active" : ""
               }`}
             >
               <div className="genki2-grey absolute inset-0 z-10 bg-slate-500/65 opacity-0 transition duration-300" />
 
               <div className="genki2-content relative z-0 transition duration-300">
-                <OpenBookIcon className="home-book-float mx-auto h-10 w-10 text-white drop-shadow sm:h-14 sm:w-14 lg:h-16 lg:w-16 2xl:h-20 2xl:w-20" />
+                <OpenBookIcon className="home-book-float mx-auto h-10 w-10 text-white drop-shadow sm:h-12 sm:w-12 lg:h-14 lg:w-14" />
 
-                <div className="mt-4 text-2xl font-black sm:mt-6 sm:text-3xl lg:text-4xl 2xl:text-5xl">
+                <div className="mt-4 text-2xl font-black sm:mt-5 sm:text-3xl lg:text-4xl">
                   Genki 2
                 </div>
               </div>
 
               <div className="jojo-hover-wrap pointer-events-none absolute bottom-5 right-2 z-20 sm:bottom-7 sm:right-7">
                 <div className="text-right font-black uppercase leading-none text-[#111827] drop-shadow-sm">
-                  <p className="text-[10px] tracking-[0.25em] sm:text-lg 2xl:text-2xl">
+                  <p className="text-[10px] tracking-[0.25em] sm:text-lg">
                     つづく
                   </p>
 
-                  <p className="mt-2 whitespace-nowrap text-[10px] tracking-wide sm:mt-3 sm:text-2xl lg:text-3xl 2xl:text-4xl">
+                  <p className="mt-2 whitespace-nowrap text-[10px] tracking-wide sm:mt-3 sm:text-2xl lg:text-3xl">
                     To Be Continued
                   </p>
                 </div>

@@ -2,16 +2,16 @@ import { PageShell } from "@/components/ui/PageShell";
 
 export default function AboutPage() {
   return (
-    <PageShell className="overflow-hidden pt-4 pb-0 sm:pt-6 lg:pt-8">
-      <section className="mx-auto grid min-h-[calc(100svh-235px)] max-w-6xl items-end gap-4 lg:grid-cols-[0.95fr_1fr] lg:gap-10 2xl:max-w-[1500px]">
-        <div className="self-center pb-4 lg:pb-4">
-          <h1 className="about-title-in text-4xl font-black leading-tight tracking-wide text-[#173763] drop-shadow-sm sm:text-5xl lg:text-6xl 2xl:text-7xl">
+    <PageShell className="overflow-hidden py-0">
+      <section className="mx-auto grid h-[calc(100svh-122px)] max-w-5xl items-center gap-4 lg:grid-cols-[0.88fr_1fr] lg:gap-8">
+        <div className="self-center">
+          <h1 className="about-title-in text-4xl font-black leading-tight tracking-wide text-[#173763] drop-shadow-sm sm:text-5xl lg:text-[48px]">
             About
             <br />
             Pokotoba
           </h1>
 
-          <div className="about-text-in mt-7 max-w-2xl space-y-4 text-base leading-relaxed text-slate-700 sm:text-lg 2xl:text-xl">
+          <div className="about-text-in mt-4 max-w-xl space-y-2.5 text-sm leading-relaxed text-slate-700 sm:text-base">
             <p>
               Pokotoba is a simple study helper I built for myself while trying
               to remember Japanese vocabulary, and I hope it can help you too.
@@ -25,39 +25,39 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <ul className="mt-8 max-w-2xl space-y-6 text-left">
-            <li className="about-bullet-1 flex items-center gap-5">
+          <ul className="mt-4 max-w-xl space-y-3.5 text-left">
+            <li className="about-bullet-1 flex items-center gap-3.5">
               <img
                 src="/free.gif"
                 alt=""
-                className="h-[72px] w-[72px] shrink-0 object-contain sm:h-20 sm:w-20 2xl:h-24 2xl:w-24"
+                className="h-12 w-12 shrink-0 object-contain sm:h-14 sm:w-14"
               />
 
               <div>
-                <h2 className="text-2xl font-black text-[#173763] sm:text-3xl 2xl:text-4xl">
+                <h2 className="text-xl font-black text-[#173763] sm:text-[22px]">
                   Completely free
                 </h2>
 
-                <p className="mt-1 text-lg leading-relaxed text-slate-600 sm:text-xl 2xl:text-2xl">
+                <p className="mt-0.5 text-sm leading-relaxed text-slate-600 sm:text-base">
                   I made this tool for myself and didn’t charge myself for it,
                   so I won’t charge you either.
                 </p>
               </div>
             </li>
 
-            <li className="about-bullet-2 flex items-center gap-5">
+            <li className="about-bullet-2 flex items-center gap-3.5">
               <img
                 src="/wrong.png"
                 alt=""
-                className="h-[72px] w-[72px] shrink-0 object-contain sm:h-20 sm:w-20 2xl:h-24 2xl:w-24"
+                className="h-12 w-12 shrink-0 object-contain sm:h-14 sm:w-14"
               />
 
               <div>
-                <h2 className="text-2xl font-black text-[#173763] sm:text-3xl 2xl:text-4xl">
+                <h2 className="text-xl font-black text-[#173763] sm:text-[22px]">
                   Independent fan project
                 </h2>
 
-                <p className="mt-1 text-lg leading-relaxed text-slate-600 sm:text-xl 2xl:text-2xl">
+                <p className="mt-0.5 text-sm leading-relaxed text-slate-600 sm:text-base">
                   I have no connection to the Genki textbooks, their authors, or
                   their publisher. Pokotoba is just a personal study tool I made
                   for practice.
@@ -67,31 +67,31 @@ export default function AboutPage() {
           </ul>
         </div>
 
-        <div className="about-character-in relative hidden h-full min-h-[430px] items-end justify-center overflow-visible lg:flex">
-          <p className="about-float absolute left-6 top-20 rotate-[-16deg] text-3xl font-black text-[#9bcc99]/45 2xl:text-5xl">
+        <div className="about-character-in relative hidden h-full items-end justify-center overflow-visible lg:flex">
+          <p className="about-float absolute left-10 top-14 rotate-[-16deg] text-2xl font-black text-[#9bcc99]/45">
             べんきょう
           </p>
 
-          <p className="about-float about-float-delay absolute right-12 top-10 rotate-[12deg] text-4xl font-black text-[#9bcc99]/40 2xl:text-6xl">
+          <p className="about-float about-float-delay absolute right-16 top-8 rotate-[12deg] text-3xl font-black text-[#9bcc99]/40">
             すごい
           </p>
 
-          <p className="about-float absolute bottom-20 right-0 rotate-[-8deg] text-3xl font-black text-[#9bcc99]/45 2xl:text-5xl">
+          <p className="about-float absolute bottom-16 right-4 rotate-[-8deg] text-2xl font-black text-[#9bcc99]/45">
             がんばって
           </p>
 
           <img
             src="/Pokochan.png"
             alt="Pokotoba helper character"
-            className="about-character translate-y-10 max-h-[calc(100svh-150px)] min-h-[430px] w-full object-contain object-bottom drop-shadow-2xl 2xl:max-h-[calc(100svh-175px)]"
+            className="about-character translate-y-4 max-h-[calc(100svh-170px)] w-full object-contain object-bottom drop-shadow-2xl"
           />
         </div>
 
-        <div className="about-character-in relative mx-auto flex max-h-[300px] justify-center overflow-hidden lg:hidden">
+        <div className="about-character-in relative mx-auto flex max-h-[230px] justify-center overflow-hidden lg:hidden">
           <img
             src="/Pokochan.png"
             alt="Pokotoba helper character"
-            className="about-character translate-y-8 max-h-[330px] w-full object-contain object-bottom drop-shadow-2xl"
+            className="about-character translate-y-8 max-h-[280px] w-full object-contain object-bottom drop-shadow-2xl"
           />
         </div>
       </section>

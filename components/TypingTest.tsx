@@ -221,8 +221,8 @@ export function TypingTest({
 
   if (loading) {
     return (
-      <PageShell>
-        <Card className="mx-auto max-w-xl p-8 text-center text-xl font-black sm:p-10 sm:text-2xl">
+      <PageShell className="py-4 sm:py-5">
+        <Card className="mx-auto max-w-md p-6 text-center text-lg font-black sm:p-8 sm:text-xl">
           Loading...
         </Card>
       </PageShell>
@@ -231,19 +231,19 @@ export function TypingTest({
 
   if (words.length === 0) {
     return (
-      <PageShell>
-        <Card className="mx-auto max-w-xl p-8 text-center sm:p-10">
+      <PageShell className="py-4 sm:py-5">
+        <Card className="mx-auto max-w-md p-6 text-center sm:p-8">
           <h1 className="text-3xl font-black text-[#173763] sm:text-4xl">
             No words yet
           </h1>
 
-          <p className="mt-4 text-base text-slate-500 sm:text-xl">
+          <p className="mt-3 text-base text-slate-500 sm:text-lg">
             Add words from the admin page.
           </p>
 
           <Link
             href="/admin"
-            className="mt-6 inline-flex text-lg font-black text-[#173763] hover:underline sm:text-xl"
+            className="mt-5 inline-flex text-base font-black text-[#173763] hover:underline sm:text-lg"
           >
             Go to admin
           </Link>
@@ -254,54 +254,52 @@ export function TypingTest({
 
   if (finished) {
     return (
-      <PageShell>
-        <div className="mx-auto max-w-6xl 2xl:max-w-[1500px]">
+      <PageShell className="py-4 sm:py-5">
+        <div className="mx-auto max-w-5xl">
           <Link
             href={`/genki/${book}/chapter/${chapter}`}
-            className="text-base font-bold text-[#173763] hover:underline sm:text-xl"
+            className="text-sm font-bold text-[#173763] hover:underline sm:text-base"
           >
             ← Back to Chapter
           </Link>
 
-          <section className="mt-8 text-center sm:mt-10">
-            <h1 className="text-5xl font-black text-[#173763] sm:text-6xl 2xl:text-7xl">
+          <section className="mt-4 text-center sm:mt-5">
+            <h1 className="text-4xl font-black text-[#173763] sm:text-5xl lg:text-[52px]">
               Results
             </h1>
 
-            <div className="mx-auto mt-8 grid max-w-3xl grid-cols-2 gap-4 sm:mt-10 sm:gap-6 2xl:max-w-5xl">
-              <Card className="p-5 sm:p-6 2xl:p-8">
-                <p className="text-base text-slate-500 sm:text-xl 2xl:text-2xl">
-                  Score
-                </p>
+            <div className="mx-auto mt-5 grid max-w-2xl grid-cols-2 gap-4 sm:mt-6 sm:gap-5">
+              <Card className="p-4 sm:p-5">
+                <p className="text-base text-slate-500 sm:text-lg">Score</p>
 
-                <p className="mt-2 text-3xl font-black text-[#173763] sm:text-5xl 2xl:text-6xl">
+                <p className="mt-2 text-3xl font-black text-[#173763] sm:text-4xl">
                   {score} / {results.length}
                 </p>
               </Card>
 
-              <Card className="p-5 sm:p-6 2xl:p-8">
-                <p className="text-base text-slate-500 sm:text-xl 2xl:text-2xl">
+              <Card className="p-4 sm:p-5">
+                <p className="text-base text-slate-500 sm:text-lg">
                   Time used
                 </p>
 
-                <p className="mt-2 text-3xl font-black text-[#173763] sm:text-5xl 2xl:text-6xl">
+                <p className="mt-2 text-3xl font-black text-[#173763] sm:text-4xl">
                   {formatTime(timeUsed)}
                 </p>
               </Card>
             </div>
 
-            <div className="mt-8 sm:mt-10">
+            <div className="mt-5 sm:mt-6">
               <ResultTable results={results} />
             </div>
 
-            <div className="mt-8 flex justify-center gap-4 sm:mt-10 sm:gap-5">
+            <div className="mt-5 flex justify-center gap-4 sm:mt-6">
               <Button variant="green" onClick={restart}>
                 Restart
               </Button>
 
               <Link
                 href={`/genki/${book}/chapter/${chapter}`}
-                className="rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-6 py-3 text-base font-black text-white shadow-lg shadow-blue-200/60 sm:px-8 sm:py-4 sm:text-xl"
+                className="rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-6 py-3 text-base font-black text-white shadow-lg shadow-blue-200/60"
               >
                 Back
               </Link>
@@ -314,8 +312,8 @@ export function TypingTest({
 
   if (!current) {
     return (
-      <PageShell>
-        <Card className="mx-auto max-w-xl p-8 text-center text-xl font-black sm:p-10 sm:text-2xl">
+      <PageShell className="py-4 sm:py-5">
+        <Card className="mx-auto max-w-md p-6 text-center text-lg font-black sm:p-8 sm:text-xl">
           Preparing...
         </Card>
       </PageShell>
@@ -330,39 +328,39 @@ export function TypingTest({
         : "border border-slate-200/70 bg-white/88 shadow-slate-200/70";
 
   return (
-    <PageShell>
-      <div className="mx-auto max-w-5xl 2xl:max-w-7xl">
+    <PageShell className="py-3 sm:py-4">
+      <div className="mx-auto max-w-4xl">
         <Link
           href={`/genki/${book}/chapter/${chapter}`}
-          className="text-base font-bold text-[#173763] hover:underline sm:text-xl"
+          className="text-sm font-bold text-[#173763] hover:underline sm:text-base"
         >
           ← Back to Chapter
         </Link>
 
-        <section className="mt-8 text-center sm:mt-10">
-          <h1 className="text-4xl font-black tracking-wide text-[#173763] sm:text-6xl lg:text-7xl 2xl:text-8xl">
+        <section className="mt-3 text-center sm:mt-4">
+          <h1 className="text-4xl font-black tracking-wide text-[#173763] sm:text-5xl lg:text-[52px]">
             Chapter {chapter} — {title}
           </h1>
 
-          <p className="mt-4 text-lg text-slate-600 sm:text-2xl lg:text-3xl 2xl:text-4xl">
+          <p className="mt-1 text-base text-slate-600 sm:text-lg lg:text-xl">
             {wordType === "kanji"
               ? "Type the hiragana reading for the kanji."
               : "Type the Japanese word for the English prompt."}
           </p>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-4 sm:mt-10 sm:gap-8 lg:gap-10">
-            <div className="rounded-xl bg-white/90 px-5 py-3 text-lg font-black text-[#173763] shadow-lg shadow-slate-200/70 sm:px-8 sm:py-4 sm:text-2xl 2xl:text-3xl">
+          <div className="mt-4 flex flex-wrap justify-center gap-3 sm:gap-4">
+            <div className="rounded-xl bg-white/90 px-4 py-2 text-base font-black text-[#173763] shadow-lg shadow-slate-200/70 sm:px-5 sm:text-lg">
               📖 {progressNumber} / {words.length}
             </div>
 
-            <div className="rounded-xl bg-white/90 px-5 py-3 text-lg font-black text-[#173763] shadow-lg shadow-slate-200/70 sm:px-8 sm:py-4 sm:text-2xl 2xl:text-3xl">
+            <div className="rounded-xl bg-white/90 px-4 py-2 text-base font-black text-[#173763] shadow-lg shadow-slate-200/70 sm:px-5 sm:text-lg">
               ◷ {formatTime(secondsLeft)}
             </div>
 
             <Button
               type="button"
               variant="danger"
-              className="text-base sm:text-xl 2xl:text-2xl"
+              className="text-sm sm:text-base"
               onClick={finishWithMissed}
               disabled={Boolean(feedback)}
             >
@@ -371,11 +369,11 @@ export function TypingTest({
           </div>
 
           <Card
-            className={`soft-pop relative mx-auto mt-8 max-w-3xl p-6 transition-all duration-200 sm:mt-10 sm:p-10 2xl:max-w-5xl 2xl:p-14 ${cardColor}`}
+            className={`soft-pop relative mx-auto mt-4 max-w-2xl p-5 transition-all duration-200 sm:mt-5 sm:p-6 ${cardColor}`}
           >
             {feedback ? (
               <div
-                className={`absolute right-4 top-4 flex h-14 w-14 items-center justify-center rounded-full text-4xl font-black text-white shadow-xl sm:right-6 sm:top-6 sm:h-20 sm:w-20 sm:text-6xl ${
+                className={`absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full text-3xl font-black text-white shadow-xl sm:h-14 sm:w-14 sm:text-4xl ${
                   feedback === "right"
                     ? "bg-green-500 shadow-green-300/70"
                     : "bg-rose-500 shadow-rose-300/70"
@@ -385,7 +383,7 @@ export function TypingTest({
               </div>
             ) : null}
 
-            <h2 className="text-4xl font-black tracking-wide text-[#173763] sm:text-6xl 2xl:text-7xl">
+            <h2 className="text-3xl font-black tracking-wide text-[#173763] sm:text-4xl lg:text-[46px]">
               {promptText(current, wordType)}
             </h2>
 
@@ -406,18 +404,18 @@ export function TypingTest({
                   skipWord();
                 }
               }}
-              className="mt-8 text-2xl sm:mt-10 sm:text-3xl 2xl:text-4xl"
+              className="mt-5 text-lg sm:text-xl"
               placeholder="Type in Japanese..."
               autoComplete="off"
               autoCorrect="off"
               spellCheck={false}
             />
 
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-8">
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
               <Button
                 type="button"
                 variant="green"
-                className="text-lg sm:text-2xl 2xl:text-3xl"
+                className="text-base sm:text-lg"
                 onClick={() => recordAnswer(answer)}
                 disabled={Boolean(feedback)}
               >
@@ -427,7 +425,7 @@ export function TypingTest({
               <Button
                 type="button"
                 variant="blue"
-                className="text-lg sm:text-2xl 2xl:text-3xl"
+                className="text-base sm:text-lg"
                 onClick={skipWord}
                 disabled={Boolean(feedback)}
               >

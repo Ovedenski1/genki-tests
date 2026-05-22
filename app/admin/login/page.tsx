@@ -126,8 +126,8 @@ export default function AdminLoginPage() {
 
   if (checkingSession) {
     return (
-      <PageShell className="flex flex-1 items-center justify-center">
-        <Card className="w-full max-w-md p-8 text-center text-2xl font-black text-[#173763]">
+      <PageShell className="flex flex-1 items-center justify-center py-4">
+        <Card className="w-full max-w-sm p-6 text-center text-xl font-black text-[#173763]">
           Checking...
         </Card>
       </PageShell>
@@ -135,23 +135,24 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <PageShell className="flex flex-1 items-center justify-center">
-      <Card className="w-full max-w-md p-8 sm:p-10 2xl:max-w-xl 2xl:p-12">
-        <p className="text-base font-black uppercase tracking-[0.3em] text-[#6d94d2] 2xl:text-lg">
+    <PageShell className="flex flex-1 items-center justify-center py-4 sm:py-5 lg:py-6">
+      <Card className="w-full max-w-sm p-6 sm:p-7">
+        <p className="text-sm font-black uppercase tracking-[0.3em] text-[#6d94d2]">
           Admin
         </p>
 
-        <h1 className="mt-3 text-5xl font-black text-[#173763] 2xl:text-6xl">
+        <h1 className="mt-2 text-4xl font-black text-[#173763]">
           Sign in
         </h1>
 
-        <form onSubmit={handleLogin} className="mt-8 grid gap-4 2xl:gap-5">
+        <form onSubmit={handleLogin} className="mt-6 grid gap-3">
           <Input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
+            className="h-11 px-4 py-2 text-sm"
           />
 
           <Input
@@ -160,15 +161,16 @@ export default function AdminLoginPage() {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
+            className="h-11 px-4 py-2 text-sm"
           />
 
           {error ? (
-            <div className="rounded-xl bg-rose-50 p-4 font-black text-rose-700">
+            <div className="rounded-xl bg-rose-50 p-3 text-sm font-black text-rose-700">
               {error}
             </div>
           ) : null}
 
-          <Button disabled={loading} variant="blue">
+          <Button disabled={loading} variant="blue" className="py-2.5 text-sm">
             {loading ? "Signing in..." : "Sign in"}
           </Button>
         </form>

@@ -7,12 +7,7 @@ import type { GenkiWord, WordType } from "@/types/genki";
 
 function EditIcon({ className = "" }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      className={className}
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 24 24" fill="none" className={className}>
       <path
         d="M4 20h4.2L19.1 9.1a2.1 2.1 0 0 0 0-3L17.9 4.9a2.1 2.1 0 0 0-3 0L4 15.8V20Z"
         stroke="currentColor"
@@ -31,18 +26,8 @@ function EditIcon({ className = "" }: { className?: string }) {
 
 function TrashIcon({ className = "" }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      className={className}
-      aria-hidden="true"
-    >
-      <path
-        d="M4 7h16"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+    <svg viewBox="0 0 24 24" fill="none" className={className}>
+      <path d="M4 7h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       <path
         d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"
         stroke="currentColor"
@@ -54,12 +39,7 @@ function TrashIcon({ className = "" }: { className?: string }) {
         strokeWidth="2"
         strokeLinejoin="round"
       />
-      <path
-        d="M10 11v5M14 11v5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+      <path d="M10 11v5M14 11v5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -124,25 +104,21 @@ export function AdminWordsTable({
 
   function renderActionButtons(word: GenkiWord) {
     return (
-      <div className="flex justify-center gap-2">
+      <div className="flex justify-center gap-1.5">
         <button
           type="button"
-          title="Edit"
-          aria-label="Edit word"
           onClick={() => onEdit(word)}
-          className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-white text-[#173763] shadow-sm shadow-slate-200/70 transition hover:-translate-y-0.5 hover:bg-blue-50 hover:shadow-md"
+          className="flex h-7 w-7 items-center justify-center rounded-lg border border-blue-100 bg-white text-[#173763] shadow-sm shadow-slate-200/70 transition hover:-translate-y-0.5 hover:bg-blue-50"
         >
-          <EditIcon className="h-4 w-4" />
+          <EditIcon className="h-3.5 w-3.5" />
         </button>
 
         <button
           type="button"
-          title="Delete"
-          aria-label="Delete word"
           onClick={() => remove(word)}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-500 text-white shadow-md shadow-rose-200/70 transition hover:-translate-y-0.5 hover:bg-rose-600 hover:shadow-lg"
+          className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-500 text-white shadow-md shadow-rose-200/70 transition hover:-translate-y-0.5 hover:bg-rose-600"
         >
-          <TrashIcon className="h-4 w-4" />
+          <TrashIcon className="h-3.5 w-3.5" />
         </button>
       </div>
     );
@@ -152,24 +128,24 @@ export function AdminWordsTable({
     if (!word) {
       return (
         <>
-          <td className="border-b border-slate-100 bg-white px-4 py-4" />
-          <td className="border-b border-slate-100 bg-white px-4 py-4" />
-          <td className="border-b border-slate-100 bg-white px-3 py-4" />
+          <td className="border-b border-slate-100 bg-white px-2.5 py-2.5" />
+          <td className="border-b border-slate-100 bg-white px-2.5 py-2.5" />
+          <td className="border-b border-slate-100 bg-white px-2 py-2.5" />
         </>
       );
     }
 
     return (
       <>
-        <td className="break-words border-b border-slate-100 bg-white px-4 py-4 align-middle text-base font-black text-[#173763] 2xl:text-lg">
+        <td className="break-words border-b border-slate-100 bg-white px-2.5 py-2.5 text-xs font-black text-[#173763]">
           {wordLabel(word)}
         </td>
 
-        <td className="break-words border-b border-slate-100 bg-white px-4 py-4 align-middle text-lg font-black text-[#173763] 2xl:text-xl">
+        <td className="break-words border-b border-slate-100 bg-white px-2.5 py-2.5 text-sm font-black text-[#173763]">
           {word.japanese}
         </td>
 
-        <td className="border-b border-slate-100 bg-white px-3 py-4 align-middle">
+        <td className="border-b border-slate-100 bg-white px-2 py-2.5">
           {renderActionButtons(word)}
         </td>
       </>
@@ -178,36 +154,29 @@ export function AdminWordsTable({
 
   function renderVocabDoubleTable() {
     return (
-      <div className="max-h-[620px] max-w-full overflow-y-auto overflow-x-hidden">
-        <table className="w-full table-fixed text-left text-sm 2xl:text-base">
+      <div className="max-h-[310px] overflow-y-auto overflow-x-hidden">
+        <table className="w-full table-fixed text-left text-xs">
           <thead className="sticky top-0 z-20">
-            <tr className="bg-[#173763] text-white shadow-sm">
-              <th className="w-[25%] px-4 py-4">Question</th>
-              <th className="w-[18%] px-4 py-4">Answer</th>
-              <th className="w-[11%] px-3 py-4 text-center">Actions</th>
+            <tr className="bg-[#173763] text-white">
+              <th className="w-[25%] px-2.5 py-2.5">Question</th>
+              <th className="w-[19%] px-2.5 py-2.5">Answer</th>
+              <th className="w-[10%] px-2 py-2.5 text-center">Actions</th>
 
-              <th className="w-[25%] border-l border-white/25 px-4 py-4">
+              <th className="w-[25%] border-l border-white/25 px-2.5 py-2.5">
                 Question
               </th>
-              <th className="w-[18%] px-4 py-4">Answer</th>
-              <th className="w-[11%] px-3 py-4 text-center">Actions</th>
+              <th className="w-[19%] px-2.5 py-2.5">Answer</th>
+              <th className="w-[10%] px-2 py-2.5 text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            {leftWords.map((leftWord, index) => {
-              const rightWord = rightWords[index];
-
-              return (
-                <tr
-                  key={leftWord.id}
-                  className="transition hover:bg-blue-50/40"
-                >
-                  {renderVocabHalf(leftWord)}
-                  {renderVocabHalf(rightWord)}
-                </tr>
-              );
-            })}
+            {leftWords.map((leftWord, index) => (
+              <tr key={leftWord.id}>
+                {renderVocabHalf(leftWord)}
+                {renderVocabHalf(rightWords[index])}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -216,35 +185,32 @@ export function AdminWordsTable({
 
   function renderKanjiTable() {
     return (
-      <div className="max-h-[620px] max-w-full overflow-y-auto overflow-x-hidden">
-        <table className="w-full table-fixed text-left text-sm 2xl:text-base">
+      <div className="max-h-[310px] overflow-y-auto overflow-x-hidden">
+        <table className="w-full table-fixed text-left text-xs">
           <thead className="sticky top-0 z-20">
-            <tr className="bg-[#173763] text-white shadow-sm">
-              <th className="w-[24%] px-4 py-4">Question</th>
-              <th className="w-[24%] px-4 py-4">Answer</th>
-              <th className="w-[16%] px-3 py-4">Mode</th>
-              <th className="w-[22%] px-4 py-4">Reading</th>
-              <th className="w-[14%] px-3 py-4 text-center">Actions</th>
+            <tr className="bg-[#173763] text-white">
+              <th className="w-[22%] px-2.5 py-2.5">Question</th>
+              <th className="w-[22%] px-2.5 py-2.5">Answer</th>
+              <th className="w-[16%] px-2 py-2.5">Mode</th>
+              <th className="w-[26%] px-2.5 py-2.5">Reading</th>
+              <th className="w-[14%] px-2 py-2.5 text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {filteredWords.map((word) => (
-              <tr
-                key={word.id}
-                className="border-b border-slate-100 bg-white transition hover:bg-blue-50/40"
-              >
-                <td className="break-words px-4 py-4 text-base font-black text-[#173763] 2xl:text-lg">
+              <tr key={word.id} className="border-b border-slate-100 bg-white">
+                <td className="break-words px-2.5 py-2.5 text-xs font-black text-[#173763]">
                   {wordLabel(word)}
                 </td>
 
-                <td className="break-words px-4 py-4 text-lg font-black text-[#173763] 2xl:text-xl">
+                <td className="break-words px-2.5 py-2.5 text-sm font-black text-[#173763]">
                   {word.japanese}
                 </td>
 
-                <td className="px-3 py-4">
+                <td className="px-2 py-2.5">
                   <span
-                    className={`rounded-full px-2 py-1 text-[10px] font-black uppercase ${
+                    className={`rounded-full px-2 py-0.5 text-[9px] font-black uppercase ${
                       word.kanji_mode === "back"
                         ? "bg-blue-100 text-blue-700"
                         : "bg-green-100 text-green-700"
@@ -254,11 +220,11 @@ export function AdminWordsTable({
                   </span>
                 </td>
 
-                <td className="break-words px-4 py-4 font-bold text-slate-500">
+                <td className="break-words px-2.5 py-2.5 text-xs font-bold text-slate-500">
                   {word.reading || "—"}
                 </td>
 
-                <td className="px-3 py-4">{renderActionButtons(word)}</td>
+                <td className="px-2 py-2.5">{renderActionButtons(word)}</td>
               </tr>
             ))}
           </tbody>
@@ -268,16 +234,16 @@ export function AdminWordsTable({
   }
 
   return (
-    <Card className="w-full max-w-full overflow-hidden xl:w-[980px] 2xl:w-[1120px]">
-      <div className="border-b border-slate-100 bg-white/95 p-4 sm:p-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <Card className="w-full overflow-hidden">
+      <div className="border-b border-slate-100 bg-white/95 p-2.5">
+        <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-lg font-black text-[#173763] sm:text-xl">
+            <p className="text-sm font-black text-[#173763]">
               {filteredWords.length}{" "}
               {filteredWords.length === 1 ? "word" : "words"}
             </p>
 
-            <p className="mt-1 text-sm font-semibold text-slate-500">
+            <p className="mt-0.5 text-[11px] font-semibold text-slate-500">
               {search.trim()
                 ? `Showing ${filteredWords.length} of ${words.length}`
                 : `Total in this selection: ${words.length}`}
@@ -288,13 +254,13 @@ export function AdminWordsTable({
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search words..."
-            className="w-full rounded-xl border border-blue-200 bg-white/90 px-4 py-3 text-base font-semibold text-[#173763] outline-none transition placeholder:text-slate-400 focus:border-[#6d94d2] focus:ring-4 focus:ring-blue-200/70 sm:w-72"
+            className="h-9 w-44 rounded-xl border border-blue-200 bg-white/90 px-3 text-xs font-semibold text-[#173763] outline-none transition placeholder:text-slate-400 focus:border-[#6d94d2] focus:ring-4 focus:ring-blue-200/70"
           />
         </div>
       </div>
 
       {filteredWords.length === 0 ? (
-        <div className="bg-white px-4 py-12 text-center text-lg font-black text-slate-500">
+        <div className="bg-white px-4 py-8 text-center text-sm font-black text-slate-500">
           {words.length === 0
             ? "No words for this selection."
             : "No words match your search."}

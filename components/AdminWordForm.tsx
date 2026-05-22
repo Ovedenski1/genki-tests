@@ -30,6 +30,9 @@ const emptyForm: LocalForm = {
   kanjiMode: "vocab",
 };
 
+const fieldClass = "h-10 px-3 py-2 text-sm";
+const selectClass = "h-10 px-3 py-2 text-sm";
+
 function splitStoredAnswers(value: string | null | undefined) {
   if (!value) return [""];
 
@@ -119,9 +122,7 @@ export function AdminWordForm({
     setForm((old) => {
       const currentAnswers = [...(old.answers || [""])];
 
-      if (currentAnswers.length <= 1) {
-        return old;
-      }
+      if (currentAnswers.length <= 1) return old;
 
       currentAnswers.splice(index, 1);
 
@@ -194,15 +195,14 @@ export function AdminWordForm({
   }
 
   return (
-    <Card className="p-6 sm:p-8 2xl:p-10">
-      <h2 className="text-3xl font-black text-[#173763] 2xl:text-4xl">
-        {editing ? "Edit word" : "Add word"}
-      </h2>
+    <Card className="max-h-[460px] overflow-y-auto p-4">
+      <h2 className="text-2xl font-black text-[#173763]">Add word</h2>
 
-      <form onSubmit={save} className="mt-6 grid gap-4 2xl:gap-5">
-        <div className="grid grid-cols-2 gap-3">
+      <form onSubmit={save} className="mt-4 grid gap-2.5">
+        <div className="grid grid-cols-2 gap-2.5">
           <Select
             value={filters.bookNumber}
+            className={selectClass}
             onChange={(event) =>
               onFiltersChange({
                 ...filters,
@@ -216,6 +216,7 @@ export function AdminWordForm({
 
           <Select
             value={filters.chapterNumber}
+            className={selectClass}
             onChange={(event) =>
               onFiltersChange({
                 ...filters,
@@ -235,6 +236,7 @@ export function AdminWordForm({
 
         <Select
           value={filters.wordType}
+          className={selectClass}
           onChange={(event) =>
             onFiltersChange({
               ...filters,
@@ -249,16 +251,18 @@ export function AdminWordForm({
         {filters.wordType === "vocab" ? (
           <>
             <Input
+              className={fieldClass}
               placeholder="Question, e.g. teacher"
               value={form.english}
               onChange={(event) => update("english", event.target.value)}
               required
             />
 
-            <div className="grid gap-3">
+            <div className="grid gap-2.5">
               {answers.map((answer, index) => (
                 <div key={index} className="flex gap-2">
                   <Input
+                    className={fieldClass}
                     placeholder={
                       index === 0
                         ? "Answer, e.g. せんせい"
@@ -275,9 +279,7 @@ export function AdminWordForm({
                     <button
                       type="button"
                       onClick={addAnswerField}
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#9bcc99] text-2xl font-black text-white shadow-lg shadow-green-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
-                      aria-label="Add another answer"
-                      title="Add another answer"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#9bcc99] text-lg font-black text-white shadow-md shadow-green-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
                     >
                       +
                     </button>
@@ -285,9 +287,7 @@ export function AdminWordForm({
                     <button
                       type="button"
                       onClick={() => removeAnswerField(index)}
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-500 text-2xl font-black text-white shadow-lg shadow-rose-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
-                      aria-label="Remove answer"
-                      title="Remove answer"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500 text-lg font-black text-white shadow-md shadow-rose-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
                     >
                       −
                     </button>
@@ -300,6 +300,7 @@ export function AdminWordForm({
           <>
             <Select
               value={form.kanjiMode}
+              className={selectClass}
               onChange={(event) =>
                 update("kanjiMode", event.target.value as "vocab" | "back")
               }
@@ -309,16 +310,18 @@ export function AdminWordForm({
             </Select>
 
             <Input
+              className={fieldClass}
               placeholder="Kanji, e.g. 先生"
               value={form.kanji}
               onChange={(event) => update("kanji", event.target.value)}
               required
             />
 
-            <div className="grid gap-3">
+            <div className="grid gap-2.5">
               {answers.map((answer, index) => (
                 <div key={index} className="flex gap-2">
                   <Input
+                    className={fieldClass}
                     placeholder={
                       index === 0
                         ? "Answer in hiragana, e.g. せんせい"
@@ -335,9 +338,7 @@ export function AdminWordForm({
                     <button
                       type="button"
                       onClick={addAnswerField}
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#9bcc99] text-2xl font-black text-white shadow-lg shadow-green-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
-                      aria-label="Add another answer"
-                      title="Add another answer"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#9bcc99] text-lg font-black text-white shadow-md shadow-green-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
                     >
                       +
                     </button>
@@ -345,9 +346,7 @@ export function AdminWordForm({
                     <button
                       type="button"
                       onClick={() => removeAnswerField(index)}
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-500 text-2xl font-black text-white shadow-lg shadow-rose-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
-                      aria-label="Remove answer"
-                      title="Remove answer"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500 text-lg font-black text-white shadow-md shadow-rose-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
                     >
                       −
                     </button>
@@ -357,7 +356,8 @@ export function AdminWordForm({
             </div>
 
             <Input
-              placeholder="Reading / meaning for results, e.g. teacher"
+              className={fieldClass}
+              placeholder="Reading / meaning for results"
               value={form.reading}
               onChange={(event) => update("reading", event.target.value)}
             />
@@ -365,12 +365,12 @@ export function AdminWordForm({
         )}
 
         {error ? (
-          <div className="rounded-xl bg-rose-50 p-4 font-black text-rose-700">
+          <div className="rounded-xl bg-rose-50 p-2.5 text-sm font-black text-rose-700">
             {error}
           </div>
         ) : null}
 
-        <Button disabled={saving} variant="blue">
+        <Button disabled={saving} variant="blue" className="mt-0.5 py-2 text-sm">
           {saving ? "Saving..." : editing ? "Save" : "Add"}
         </Button>
       </form>

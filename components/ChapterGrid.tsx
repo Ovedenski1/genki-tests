@@ -20,7 +20,7 @@ export function ChapterGrid({ book }: { book: number }) {
     : "translate-y-8 scale-[0.96] opacity-0";
 
   return (
-    <div className="mx-auto mt-8 grid max-w-6xl grid-cols-2 gap-4 sm:mt-12 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-9">
+    <div className="mx-auto mt-7 grid w-full max-w-[920px] grid-cols-2 gap-4 sm:mt-8 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
       {Array.from({ length: 12 }, (_, index) => {
         const chapter = index + 1;
         const isBlue = chapter % 2 === 1;
@@ -29,19 +29,19 @@ export function ChapterGrid({ book }: { book: number }) {
           <div
             key={chapter}
             className={`transition-all duration-700 ease-out ${cardAnimation}`}
-            style={{ transitionDelay: `${index * 55}ms` }}
+            style={{ transitionDelay: `${index * 45}ms` }}
           >
             <Link
               href={`/genki/${book}/chapter/${chapter}`}
-              className={`flex h-28 flex-col items-center justify-center rounded-xl px-4 text-center text-white shadow-xl transition hover:-translate-y-1 hover:brightness-105 sm:h-32 lg:h-36 ${
+              className={`flex h-[92px] flex-col items-center justify-center rounded-xl px-4 text-center text-white shadow-xl transition hover:-translate-y-1 hover:brightness-105 sm:h-[104px] lg:h-[112px] ${
                 isBlue
                   ? "bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] shadow-blue-300/50"
                   : "bg-gradient-to-br from-[#9bcc99] to-[#78b978] shadow-green-300/50"
               }`}
             >
-              <OpenBookIcon className="home-book-float h-8 w-8 text-white drop-shadow sm:h-10 sm:w-10" />
+              <OpenBookIcon className="home-book-float h-7 w-7 text-white drop-shadow sm:h-8 sm:w-8" />
 
-              <div className="mt-3 whitespace-nowrap text-lg font-black leading-none sm:mt-4 sm:text-2xl">
+              <div className="mt-3 whitespace-nowrap text-lg font-black leading-none sm:text-xl">
                 Chapter {chapter}
               </div>
             </Link>
