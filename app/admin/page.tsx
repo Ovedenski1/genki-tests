@@ -9,12 +9,13 @@ import { Card } from "@/components/ui/Card";
 import { PageShell } from "@/components/ui/PageShell";
 import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
 import { fetchAdminWords } from "@/lib/queries";
-import type { GenkiWord, WordType } from "@/types/genki";
+import type { GenkiWord, KanjiMode, WordType } from "@/types/genki";
 
 export type AdminFilters = {
   bookNumber: number;
   chapterNumber: number;
   wordType: WordType;
+  kanjiMode: Exclude<KanjiMode, "all">;
 };
 
 function AdminDashboard() {
@@ -25,6 +26,7 @@ function AdminDashboard() {
     bookNumber: 1,
     chapterNumber: 1,
     wordType: "vocab",
+    kanjiMode: "vocab",
   });
 
   const [loading, setLoading] = useState(true);
@@ -38,7 +40,8 @@ function AdminDashboard() {
       const data = await fetchAdminWords(
         nextFilters.bookNumber,
         nextFilters.chapterNumber,
-        nextFilters.wordType
+        nextFilters.wordType,
+        nextFilters.wordType === "kanji" ? nextFilters.kanjiMode : "all"
       );
 
       setWords(data);
@@ -62,22 +65,32 @@ function AdminDashboard() {
   useEffect(() => {
     loadWords(filters);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.bookNumber, filters.chapterNumber, filters.wordType]);
+  }, [
+    filters.bookNumber,
+    filters.chapterNumber,
+    filters.wordType,
+    filters.kanjiMode,
+  ]);
 
-  const title = `Genki ${filters.bookNumber} · Chapter ${
-    filters.chapterNumber
-  } · ${filters.wordType === "vocab" ? "Vocab" : "Kanji"}`;
+  const typeLabel =
+    filters.wordType === "vocab"
+      ? "Vocab"
+      : filters.kanjiMode === "back"
+        ? "Kanji Back"
+        : "Kanji Vocab";
+
+  const title = `Genki ${filters.bookNumber} · Chapter ${filters.chapterNumber} · ${typeLabel}`;
 
   return (
     <PageShell className="overflow-hidden py-3 sm:py-4 lg:py-5">
-      <div className="mx-auto max-w-[920px]">
-        <div className="mb-4 flex items-start justify-between gap-4">
+      <div className="mx-auto w-full max-w-[1467px] origin-top scale-90">
+        <div className="mb-5 flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.35em] text-[#6d94d2]">
               Admin
             </p>
 
-            <h1 className="mt-1.5 text-3xl font-black tracking-tight text-[#173763] sm:text-[34px] lg:text-[38px]">
+            <h1 className="mt-1.5 text-3xl font-black tracking-tight text-[#173763] sm:text-[40px] lg:text-[48px]">
               {title}
             </h1>
           </div>
@@ -85,7 +98,7 @@ function AdminDashboard() {
           <Button
             variant="secondary"
             onClick={signOut}
-            className="mt-4 shrink-0 px-4 py-2 text-xs sm:text-sm"
+            className="mt-4 shrink-0 px-5 py-3 text-xs sm:text-sm"
           >
             Sign out
           </Button>
@@ -97,7 +110,7 @@ function AdminDashboard() {
           </Card>
         ) : null}
 
-        <div className="grid items-start justify-center gap-4 xl:grid-cols-[285px_minmax(0,1fr)] xl:justify-start">
+        <div className="grid items-stretch gap-5 xl:grid-cols-[380px_minmax(0,1fr)]">
           <AdminWordForm
             editing={editing}
             filters={filters}
@@ -112,7 +125,7 @@ function AdminDashboard() {
           />
 
           {loading ? (
-            <Card className="w-full p-6 text-center text-lg font-black">
+            <Card className="flex h-[min(620px,calc(100svh-250px))] min-h-[520px] w-full items-center justify-center p-6 text-center text-lg font-black">
               Loading words...
             </Card>
           ) : (

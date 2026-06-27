@@ -25,9 +25,9 @@ export function PracticeCard({
       className={`flex h-[220px] w-full flex-col items-center justify-center rounded-xl px-4 text-center text-white shadow-xl transition hover:-translate-y-1 hover:brightness-105 sm:h-[250px] lg:h-[285px] ${styles}`}
     >
       {icon === "book" ? (
-        <OpenBookIcon className="mx-auto h-12 w-12 text-white drop-shadow sm:h-14 sm:w-14 lg:h-16 lg:w-16" />
+        <OpenBookIcon className="home-book-float mx-auto h-12 w-12 text-white drop-shadow sm:h-14 sm:w-14 lg:h-16 lg:w-16" />
       ) : (
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 border-white text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+        <div className="home-book-float mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 border-white text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
           <KanjiIcon className="text-4xl font-black leading-none sm:text-5xl" />
         </div>
       )}

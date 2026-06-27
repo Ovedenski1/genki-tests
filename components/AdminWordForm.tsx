@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -30,8 +30,8 @@ const emptyForm: LocalForm = {
   kanjiMode: "vocab",
 };
 
-const fieldClass = "h-10 px-3 py-2 text-sm";
-const selectClass = "h-10 px-3 py-2 text-sm";
+const fieldClass = "h-12 px-4 py-2.5 text-sm";
+const selectClass = "h-12 px-4 py-2.5 text-sm";
 
 function splitStoredAnswers(value: string | null | undefined) {
   if (!value) return [""];
@@ -82,7 +82,7 @@ export function AdminWordForm({
 
   useEffect(() => {
     if (!editing) {
-      setForm((old) => emptyFormKeepingMode(old.kanjiMode));
+      setForm(emptyFormKeepingMode(filters.kanjiMode));
       return;
     }
 
@@ -93,7 +93,7 @@ export function AdminWordForm({
       reading: editing.reading || "",
       kanjiMode: editing.kanji_mode === "back" ? "back" : "vocab",
     });
-  }, [editing]);
+  }, [editing, filters.wordType, filters.kanjiMode]);
 
   function update<K extends keyof LocalForm>(key: K, value: LocalForm[K]) {
     setForm((old) => ({ ...old, [key]: value }));
@@ -133,13 +133,22 @@ export function AdminWordForm({
     });
   }
 
-  async function save(event: React.FormEvent) {
+  function changeKanjiMode(nextMode: Exclude<KanjiMode, "all">) {
+    update("kanjiMode", nextMode);
+
+    onFiltersChange({
+      ...filters,
+      kanjiMode: nextMode,
+    });
+  }
+
+  async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setSaving(true);
     setError("");
 
-    const selectedKanjiMode = form.kanjiMode || "vocab";
+    const selectedKanjiMode = form.kanjiMode || filters.kanjiMode || "vocab";
     const joinedAnswers = joinAnswers(form.answers);
 
     try {
@@ -195,11 +204,11 @@ export function AdminWordForm({
   }
 
   return (
-    <Card className="max-h-[460px] overflow-y-auto p-4">
+    <Card className="h-[535px] overflow-y-auto p-5">
       <h2 className="text-2xl font-black text-[#173763]">Add word</h2>
 
-      <form onSubmit={save} className="mt-4 grid gap-2.5">
-        <div className="grid grid-cols-2 gap-2.5">
+      <form onSubmit={save} className="mt-5 grid gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <Select
             value={filters.bookNumber}
             className={selectClass}
@@ -258,9 +267,9 @@ export function AdminWordForm({
               required
             />
 
-            <div className="grid gap-2.5">
+            <div className="grid gap-3">
               {answers.map((answer, index) => (
-                <div key={index} className="flex gap-2">
+                <div key={index} className="flex gap-3">
                   <Input
                     className={fieldClass}
                     placeholder={
@@ -279,7 +288,7 @@ export function AdminWordForm({
                     <button
                       type="button"
                       onClick={addAnswerField}
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#9bcc99] text-lg font-black text-white shadow-md shadow-green-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#9bcc99] text-lg font-black text-white shadow-md shadow-green-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
                     >
                       +
                     </button>
@@ -287,7 +296,7 @@ export function AdminWordForm({
                     <button
                       type="button"
                       onClick={() => removeAnswerField(index)}
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500 text-lg font-black text-white shadow-md shadow-rose-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-500 text-lg font-black text-white shadow-md shadow-rose-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
                     >
                       −
                     </button>
@@ -302,7 +311,7 @@ export function AdminWordForm({
               value={form.kanjiMode}
               className={selectClass}
               onChange={(event) =>
-                update("kanjiMode", event.target.value as "vocab" | "back")
+                changeKanjiMode(event.target.value as "vocab" | "back")
               }
             >
               <option value="vocab">Kanji Vocab</option>
@@ -317,9 +326,9 @@ export function AdminWordForm({
               required
             />
 
-            <div className="grid gap-2.5">
+            <div className="grid gap-3">
               {answers.map((answer, index) => (
-                <div key={index} className="flex gap-2">
+                <div key={index} className="flex gap-3">
                   <Input
                     className={fieldClass}
                     placeholder={
@@ -338,7 +347,7 @@ export function AdminWordForm({
                     <button
                       type="button"
                       onClick={addAnswerField}
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#9bcc99] text-lg font-black text-white shadow-md shadow-green-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#9bcc99] text-lg font-black text-white shadow-md shadow-green-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
                     >
                       +
                     </button>
@@ -346,7 +355,7 @@ export function AdminWordForm({
                     <button
                       type="button"
                       onClick={() => removeAnswerField(index)}
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500 text-lg font-black text-white shadow-md shadow-rose-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-500 text-lg font-black text-white shadow-md shadow-rose-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
                     >
                       −
                     </button>
@@ -365,12 +374,12 @@ export function AdminWordForm({
         )}
 
         {error ? (
-          <div className="rounded-xl bg-rose-50 p-2.5 text-sm font-black text-rose-700">
+          <div className="rounded-xl bg-rose-50 p-3 text-sm font-black text-rose-700">
             {error}
           </div>
         ) : null}
 
-        <Button disabled={saving} variant="blue" className="mt-0.5 py-2 text-sm">
+        <Button disabled={saving} variant="blue" className="mt-1 py-3 text-sm">
           {saving ? "Saving..." : editing ? "Save" : "Add"}
         </Button>
       </form>

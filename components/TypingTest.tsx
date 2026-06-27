@@ -372,20 +372,20 @@ export function TypingTest({
             className={`soft-pop relative mx-auto mt-4 max-w-2xl p-5 transition-all duration-200 sm:mt-5 sm:p-6 ${cardColor}`}
           >
             {feedback ? (
-              <div
-                className={`absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full text-3xl font-black text-white shadow-xl sm:h-14 sm:w-14 sm:text-4xl ${
-                  feedback === "right"
-                    ? "bg-green-500 shadow-green-300/70"
-                    : "bg-rose-500 shadow-rose-300/70"
-                }`}
-              >
-                {feedback === "right" ? "✓" : "×"}
-              </div>
-            ) : null}
+  <div
+    className={`absolute -right-3 -top-7 z-20 flex h-12 w-12 items-center justify-center rounded-full text-3xl font-black text-white shadow-xl sm:-right-4 sm:-top-8 sm:h-14 sm:w-14 sm:text-4xl ${
+      feedback === "right"
+        ? "bg-green-500 shadow-green-300/70"
+        : "bg-rose-500 shadow-rose-300/70"
+    }`}
+  >
+    {feedback === "right" ? "✓" : "×"}
+  </div>
+) : null}
 
-            <h2 className="text-3xl font-black tracking-wide text-[#173763] sm:text-4xl lg:text-[46px]">
-              {promptText(current, wordType)}
-            </h2>
+<h2 className="break-words px-4 text-3xl font-black tracking-wide text-[#173763] sm:px-8 sm:text-4xl lg:text-[46px]">
+  {promptText(current, wordType)}
+</h2>
 
             <Input
               ref={inputRef}
