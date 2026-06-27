@@ -1,140 +1,156 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import type { TypingResult } from "@/types/genki";
 
+type FilterType = "all" | "mistakes" | "correct";
+
 export function ResultTable({ results }: { results: TypingResult[] }) {
+  const [filter, setFilter] = useState<FilterType>("all");
+
   const showReading = results.some((result) => result.reading);
 
-  // Vocab results can fit 3 groups per row.
-  // Kanji/reading results need more columns, so keep 2 groups per row.
-  const groupsPerRow = showReading ? 2 : 3;
+  const filteredResults = useMemo(() => {
+    if (filter === "mistakes") {
+      return results.filter((result) => !result.correct);
+    }
 
-  const rows: TypingResult[][] = [];
+    if (filter === "correct") {
+      return results.filter((result) => result.correct);
+    }
 
-  for (let index = 0; index < results.length; index += groupsPerRow) {
-    rows.push(results.slice(index, index + groupsPerRow));
-  }
+    return results;
+  }, [filter, results]);
 
-  const groupColSpan = showReading ? 5 : 4;
+  const correctCount = results.filter((result) => result.correct).length;
+  const mistakeCount = results.length - correctCount;
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-white shadow-xl shadow-slate-200/70">
-      <table className="w-full table-fixed text-left text-[11px] sm:text-xs">
-        <thead>
-          <tr className="bg-[#173763] text-white">
-            {Array.from({ length: groupsPerRow }, (_, groupIndex) => (
-              <HeaderCells
-                key={groupIndex}
-                showReading={showReading}
-                withDivider={groupIndex > 0}
-              />
-            ))}
-          </tr>
-        </thead>
+    <div className="grid gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <FilterButton
+          active={filter === "all"}
+          onClick={() => setFilter("all")}
+        >
+          All {results.length}
+        </FilterButton>
 
-        <tbody>
-          {rows.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {Array.from({ length: groupsPerRow }, (_, groupIndex) => {
-                const result = row[groupIndex];
-                const number = rowIndex * groupsPerRow + groupIndex + 1;
+        <FilterButton
+          active={filter === "mistakes"}
+          onClick={() => setFilter("mistakes")}
+        >
+          Mistakes {mistakeCount}
+        </FilterButton>
 
-                if (!result) {
-                  return (
-                    <td
-                      key={groupIndex}
-                      colSpan={groupColSpan}
-                      className={`bg-white px-2 py-2 ${
-                        groupIndex > 0 ? "border-l border-slate-200" : ""
-                      }`}
-                    />
-                  );
-                }
+        <FilterButton
+          active={filter === "correct"}
+          onClick={() => setFilter("correct")}
+        >
+          Correct {correctCount}
+        </FilterButton>
+      </div>
 
-                return (
-                  <ResultCells
-                    key={groupIndex}
-                    result={result}
-                    number={number}
-                    showReading={showReading}
-                    withDivider={groupIndex > 0}
-                  />
-                );
-              })}
-            </tr>
+      {filteredResults.length === 0 ? (
+        <div className="rounded-xl bg-white px-4 py-6 text-center text-sm font-black text-slate-500 shadow-md shadow-slate-200/60">
+          Nothing to show here.
+        </div>
+      ) : (
+        <div
+          className={`grid gap-2 ${
+            showReading ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"
+          }`}
+        >
+          {filteredResults.map((result, index) => (
+            <CompactResultRow
+              key={`${result.prompt}-${index}`}
+              result={result}
+              number={results.indexOf(result) + 1}
+              showReading={showReading}
+            />
           ))}
-        </tbody>
-      </table>
+        </div>
+      )}
     </div>
   );
 }
 
-function HeaderCells({
-  showReading,
-  withDivider = false,
+function FilterButton({
+  active,
+  onClick,
+  children,
 }: {
-  showReading: boolean;
-  withDivider?: boolean;
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
 }) {
-  const divider = withDivider ? "border-l border-white/20" : "";
-
   return (
-    <>
-      <th className={`${divider} w-[32px] px-2 py-2`}>#</th>
-      <th className="px-2 py-2">Question</th>
-      <th className="px-2 py-2">Answer</th>
-      <th className="px-2 py-2">You</th>
-
-      {showReading ? <th className="px-2 py-2">Reading</th> : null}
-    </>
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full px-4 py-2 text-xs font-black transition sm:text-sm ${
+        active
+          ? "bg-[#173763] text-white shadow-md shadow-blue-200/70"
+          : "bg-white text-[#173763] shadow-sm shadow-slate-200/70 hover:bg-blue-50"
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 
-function ResultCells({
+function CompactResultRow({
   result,
   number,
   showReading,
-  withDivider = false,
 }: {
   result: TypingResult;
   number: number;
   showReading: boolean;
-  withDivider?: boolean;
 }) {
   const bg = result.correct ? "bg-green-50" : "bg-rose-50";
-  const divider = withDivider ? "border-l border-slate-200" : "";
+  const border = result.correct ? "border-green-100" : "border-rose-100";
+  const mark = result.correct ? "○" : "×";
+  const markColor = result.correct ? "text-green-700" : "text-rose-700";
 
   return (
-    <>
-      <td
-        className={`${bg} ${divider} w-[32px] px-2 py-2 align-top font-black text-[#173763]`}
-      >
-        {number}
-      </td>
+    <div
+      className={`${bg} ${border} rounded-xl border px-3 py-2 shadow-sm shadow-slate-200/60`}
+    >
+      <div className="flex items-start gap-2">
+        <div className="shrink-0 text-sm font-black text-[#173763]">
+          {number}.
+        </div>
 
-      <td
-        className={`${bg} break-words px-2 py-2 align-top font-black leading-snug text-[#173763]`}
-      >
-        {result.prompt}
-      </td>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <p className="break-words text-sm font-black leading-snug text-[#173763] sm:text-base">
+              {result.prompt}
+            </p>
 
-      <td
-        className={`${bg} break-words px-2 py-2 align-top font-black leading-snug text-[#173763]`}
-      >
-        {result.expected}
-      </td>
+            <span className={`shrink-0 text-xl font-black leading-none ${markColor}`}>
+              {mark}
+            </span>
+          </div>
 
-      <td
-        className={`${bg} break-words px-2 py-2 align-top font-black leading-snug text-[#173763]`}
-      >
-        {result.userAnswer || "—"}
-      </td>
+          <div className="mt-1 grid grid-cols-2 gap-2 text-xs font-black leading-snug text-[#173763] sm:text-sm">
+            <p className="break-words">
+              <span className="text-slate-400">A: </span>
+              {result.expected}
+            </p>
 
-      {showReading ? (
-        <td
-          className={`${bg} break-words px-2 py-2 align-top text-[11px] font-bold leading-snug text-slate-500`}
-        >
-          {result.reading || "—"}
-        </td>
-      ) : null}
-    </>
+            <p className="break-words">
+              <span className="text-slate-400">You: </span>
+              {result.userAnswer || "—"}
+            </p>
+          </div>
+
+          {showReading ? (
+            <p className="mt-1 break-words text-[11px] font-bold leading-snug text-slate-500 sm:text-xs">
+              {result.reading || "—"}
+            </p>
+          ) : null}
+        </div>
+      </div>
+    </div>
   );
 }

@@ -28,7 +28,11 @@ export default async function ChapterPage({ params }: PageProps) {
           Choose what you want to study.
         </p>
 
-        <ChapterPracticeMenu base={base} />
+        <ChapterPracticeMenu
+          base={base}
+          book={Number(book)}
+          chapter={Number(chapter)}
+        />
       </section>
     </PageShell>
   );

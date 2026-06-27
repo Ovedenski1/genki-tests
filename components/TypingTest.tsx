@@ -31,12 +31,16 @@ export function TypingTest({
   chapter,
   wordType,
   kanjiMode = "all",
+  studyListId = null,
+  includeExtraVocab = false,
   title,
 }: {
   book: number;
   chapter: number;
   wordType: WordType;
   kanjiMode?: KanjiMode;
+  studyListId?: string | null;
+  includeExtraVocab?: boolean;
   title: string;
 }) {
   const [words, setWords] = useState<GenkiWord[]>([]);
@@ -79,7 +83,15 @@ export function TypingTest({
       setLoading(true);
 
       try {
-        const data = await fetchWords(book, chapter, wordType, kanjiMode);
+        const data = await fetchWords(
+          book,
+          chapter,
+          wordType,
+          kanjiMode,
+          studyListId,
+          includeExtraVocab
+        );
+
         const shuffledWords = shuffle(data);
 
         setWords(data);
@@ -97,7 +109,7 @@ export function TypingTest({
     }
 
     load();
-  }, [book, chapter, wordType, kanjiMode]);
+  }, [book, chapter, wordType, kanjiMode, studyListId, includeExtraVocab]);
 
   useEffect(() => {
     if (loading || finished || feedback || words.length === 0) return;
@@ -372,20 +384,20 @@ export function TypingTest({
             className={`soft-pop relative mx-auto mt-4 max-w-2xl p-5 transition-all duration-200 sm:mt-5 sm:p-6 ${cardColor}`}
           >
             {feedback ? (
-  <div
-    className={`absolute -right-3 -top-7 z-20 flex h-12 w-12 items-center justify-center rounded-full text-3xl font-black text-white shadow-xl sm:-right-4 sm:-top-8 sm:h-14 sm:w-14 sm:text-4xl ${
-      feedback === "right"
-        ? "bg-green-500 shadow-green-300/70"
-        : "bg-rose-500 shadow-rose-300/70"
-    }`}
-  >
-    {feedback === "right" ? "✓" : "×"}
-  </div>
-) : null}
+              <div
+                className={`absolute -right-3 -top-7 z-20 flex h-12 w-12 items-center justify-center rounded-full text-3xl font-black text-white shadow-xl sm:-right-4 sm:-top-8 sm:h-14 sm:w-14 sm:text-4xl ${
+                  feedback === "right"
+                    ? "bg-green-500 shadow-green-300/70"
+                    : "bg-rose-500 shadow-rose-300/70"
+                }`}
+              >
+                {feedback === "right" ? "✓" : "×"}
+              </div>
+            ) : null}
 
-<h2 className="break-words px-4 text-3xl font-black tracking-wide text-[#173763] sm:px-8 sm:text-4xl lg:text-[46px]">
-  {promptText(current, wordType)}
-</h2>
+            <h2 className="break-words px-4 text-3xl font-black tracking-wide text-[#173763] sm:px-8 sm:text-4xl lg:text-[46px]">
+              {promptText(current, wordType)}
+            </h2>
 
             <Input
               ref={inputRef}
@@ -395,13 +407,15 @@ export function TypingTest({
               onKeyDown={(event) => {
                 if (event.nativeEvent.isComposing) return;
 
-                if (event.key === "Enter") {
-                  recordAnswer(answer);
-                }
-
-                if (event.key === " ") {
+                if (event.key === "Control" && !event.repeat) {
                   event.preventDefault();
                   skipWord();
+                  return;
+                }
+
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  recordAnswer(answer);
                 }
               }}
               className="mt-5 text-lg sm:text-xl"
