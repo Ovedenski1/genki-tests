@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { toHiragana, toKatakana } from "wanakana";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -22,8 +23,78 @@ import type {
   TypingResult,
 } from "@/types/genki";
 
+type InputMode = "english" | "hiragana" | "katakana";
+
 function secondsPerWord(type: WordType) {
   return type === "kanji" ? 8 : 10;
+}
+
+function convertDraftKana(value: string, mode: InputMode) {
+  if (mode === "english") return value;
+
+  return mode === "hiragana"
+    ? toHiragana(value, { IMEMode: true })
+    : toKatakana(value, { IMEMode: true });
+}
+
+function convertFinalKana(value: string, mode: InputMode) {
+  if (mode === "english") return value;
+
+  return mode === "hiragana" ? toHiragana(value) : toKatakana(value);
+}
+
+function nextInputMode(mode: InputMode): InputMode {
+  if (mode === "english") return "hiragana";
+  if (mode === "hiragana") return "katakana";
+  return "english";
+}
+
+function modeIndex(mode: InputMode) {
+  if (mode === "english") return 0;
+  if (mode === "hiragana") return 1;
+  return 2;
+}
+
+function InputModeSwitch({
+  inputMode,
+  onChange,
+}: {
+  inputMode: InputMode;
+  onChange: (mode: InputMode) => void;
+}) {
+  const activeIndex = modeIndex(inputMode);
+
+  const labels: { mode: InputMode; label: string }[] = [
+    { mode: "english", label: "A" },
+    { mode: "hiragana", label: "あ" },
+    { mode: "katakana", label: "ア" },
+  ];
+
+  return (
+    <div className="relative flex h-12 w-44 items-center rounded-full bg-slate-100 p-1 shadow-inner shadow-slate-300/60">
+      <div
+        className="absolute left-1 top-1 h-10 rounded-full bg-gradient-to-br from-[#9bcc99] to-[#78b978] shadow-md shadow-green-300/60 transition-transform duration-300 ease-out"
+        style={{
+          width: "calc((100% - 0.5rem) / 3)",
+          transform: `translateX(${activeIndex * 100}%)`,
+        }}
+      />
+
+      {labels.map((item) => (
+        <button
+          key={item.mode}
+          type="button"
+          onClick={() => onChange(item.mode)}
+          className={`relative z-10 flex h-10 flex-1 items-center justify-center rounded-full text-xl font-black transition ${
+            inputMode === item.mode ? "text-white" : "text-slate-400"
+          }`}
+          aria-label={`Switch to ${item.mode} input`}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
 }
 
 export function TypingTest({
@@ -51,11 +122,15 @@ export function TypingTest({
   const [loading, setLoading] = useState(true);
   const [finished, setFinished] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(0);
+  const [inputMode, setInputMode] = useState<InputMode>("hiragana");
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const correctSoundRef = useRef<HTMLAudioElement | null>(null);
   const wrongSoundRef = useRef<HTMLAudioElement | null>(null);
   const skipSoundRef = useRef<HTMLAudioElement | null>(null);
+  const switchSoundRef = useRef<HTMLAudioElement | null>(null);
+const shiftWasAloneRef = useRef(false);
+const segmentStartRef = useRef(0);
 
   const current = queue[0];
 
@@ -72,10 +147,12 @@ export function TypingTest({
     correctSoundRef.current = new Audio("/sounds/correct.wav");
     wrongSoundRef.current = new Audio("/sounds/wrong.mp3");
     skipSoundRef.current = new Audio("/sounds/skip.mp3");
+    switchSoundRef.current = new Audio("/sounds/switch.wav");
 
     correctSoundRef.current.volume = 0.65;
     wrongSoundRef.current.volume = 0.65;
     skipSoundRef.current.volume = 0.55;
+    switchSoundRef.current.volume = 0.5;
   }, []);
 
   useEffect(() => {
@@ -101,6 +178,7 @@ export function TypingTest({
         setFeedback(null);
         setFinished(false);
         setSecondsLeft(data.length * secondsPerWord(wordType));
+        segmentStartRef.current = 0;
       } catch (error) {
         console.error(error);
       } finally {
@@ -148,10 +226,70 @@ export function TypingTest({
     playSound(skipSoundRef.current);
   }
 
+  function playSwitchSound() {
+    playSound(switchSoundRef.current);
+  }
+
   function formatTime(total: number) {
     const minutes = Math.floor(total / 60).toString().padStart(2, "0");
     const secs = (total % 60).toString().padStart(2, "0");
     return `${minutes}:${secs}`;
+  }
+
+  function focusInputSoon() {
+    window.setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+  }
+
+  function changeInputMode(mode: InputMode) {
+    if (mode !== inputMode) {
+      playSwitchSound();
+    }
+
+    setInputMode(mode);
+    segmentStartRef.current = answer.length;
+    focusInputSoon();
+  }
+
+  function cycleInputMode() {
+    playSwitchSound();
+    setInputMode((old) => nextInputMode(old));
+    segmentStartRef.current = answer.length;
+    focusInputSoon();
+  }
+
+  function updateAnswer(nextValue: string) {
+    setAnswer((oldValue) => {
+      if (inputMode === "english") {
+        return nextValue;
+      }
+
+      if (nextValue.length < segmentStartRef.current) {
+        segmentStartRef.current = nextValue.length;
+        return nextValue;
+      }
+
+      if (nextValue.length < oldValue.length) {
+        return nextValue;
+      }
+
+      const prefix = nextValue.slice(0, segmentStartRef.current);
+      const activeSegment = nextValue.slice(segmentStartRef.current);
+      const convertedSegment = convertDraftKana(activeSegment, inputMode);
+
+      return prefix + convertedSegment;
+    });
+  }
+
+  function finishCurrentSegment(value: string) {
+    if (inputMode === "english") return value;
+
+    const prefix = value.slice(0, segmentStartRef.current);
+    const activeSegment = value.slice(segmentStartRef.current);
+    const convertedSegment = convertFinalKana(activeSegment, inputMode);
+
+    return prefix + convertedSegment;
   }
 
   function finishWithMissed() {
@@ -197,6 +335,7 @@ export function TypingTest({
       setQueue((old) => old.slice(1));
       setAnswer("");
       setFeedback(null);
+      segmentStartRef.current = 0;
 
       if (isLastWord) {
         setFinished(true);
@@ -204,11 +343,19 @@ export function TypingTest({
     }, 650);
   }
 
+  function checkAnswer() {
+    const finalAnswer = finishCurrentSegment(answer);
+
+    setAnswer(finalAnswer);
+    recordAnswer(finalAnswer);
+  }
+
   function skipWord() {
     if (!current || feedback || finished) return;
 
     playSkipSound();
     setAnswer("");
+    segmentStartRef.current = 0;
 
     setQueue((old) => {
       if (old.length <= 1) return old;
@@ -217,9 +364,7 @@ export function TypingTest({
       return [...rest, firstWord];
     });
 
-    window.setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
+    focusInputSoon();
   }
 
   function restart() {
@@ -229,6 +374,7 @@ export function TypingTest({
     setFeedback(null);
     setFinished(false);
     setSecondsLeft(words.length * secondsPerWord(wordType));
+    segmentStartRef.current = 0;
   }
 
   if (loading) {
@@ -248,17 +394,6 @@ export function TypingTest({
           <h1 className="text-3xl font-black text-[#173763] sm:text-4xl">
             No words yet
           </h1>
-
-          <p className="mt-3 text-base text-slate-500 sm:text-lg">
-            Add words from the admin page.
-          </p>
-
-          <Link
-            href="/admin"
-            className="mt-5 inline-flex text-base font-black text-[#173763] hover:underline sm:text-lg"
-          >
-            Go to admin
-          </Link>
         </Card>
       </PageShell>
     );
@@ -360,7 +495,14 @@ export function TypingTest({
               : "Type the Japanese word for the English prompt."}
           </p>
 
-          <div className="mt-4 flex flex-wrap justify-center gap-3 sm:gap-4">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+            <div className="hidden sm:block">
+              <InputModeSwitch
+                inputMode={inputMode}
+                onChange={changeInputMode}
+              />
+            </div>
+
             <div className="rounded-xl bg-white/90 px-4 py-2 text-base font-black text-[#173763] shadow-lg shadow-slate-200/70 sm:px-5 sm:text-lg">
               📖 {progressNumber} / {words.length}
             </div>
@@ -403,23 +545,43 @@ export function TypingTest({
               ref={inputRef}
               value={answer}
               disabled={Boolean(feedback)}
-              onChange={(event) => setAnswer(event.target.value)}
+              onChange={(event) => updateAnswer(event.target.value)}
               onKeyDown={(event) => {
-                if (event.nativeEvent.isComposing) return;
+  if (event.nativeEvent.isComposing) return;
 
-                if (event.key === "Control" && !event.repeat) {
-                  event.preventDefault();
-                  skipWord();
-                  return;
-                }
+  if (event.key === "Shift" && !event.repeat) {
+    shiftWasAloneRef.current = true;
+    return;
+  }
 
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  recordAnswer(answer);
-                }
-              }}
+  if (event.shiftKey && event.key.length === 1) {
+    shiftWasAloneRef.current = false;
+  }
+
+  if (event.key === "Control" && !event.repeat) {
+    event.preventDefault();
+    skipWord();
+    return;
+  }
+
+  if (event.key === "Enter") {
+    event.preventDefault();
+    checkAnswer();
+  }
+}}
+onKeyUp={(event) => {
+  if (event.key === "Shift" && shiftWasAloneRef.current) {
+    event.preventDefault();
+    shiftWasAloneRef.current = false;
+    cycleInputMode();
+  }
+}}
               className="mt-5 text-lg sm:text-xl"
-              placeholder="Type in Japanese..."
+              placeholder={
+                inputMode === "english"
+                  ? "Type normally..."
+                  : "Type in romaji..."
+              }
               autoComplete="off"
               autoCorrect="off"
               spellCheck={false}
@@ -430,7 +592,7 @@ export function TypingTest({
                 type="button"
                 variant="green"
                 className="text-base sm:text-lg"
-                onClick={() => recordAnswer(answer)}
+                onClick={checkAnswer}
                 disabled={Boolean(feedback)}
               >
                 Check
@@ -447,6 +609,10 @@ export function TypingTest({
               </Button>
             </div>
           </Card>
+
+          <div className="mt-4 flex justify-center sm:hidden">
+            <InputModeSwitch inputMode={inputMode} onChange={changeInputMode} />
+          </div>
         </section>
       </div>
     </PageShell>
