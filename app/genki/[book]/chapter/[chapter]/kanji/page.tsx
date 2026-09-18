@@ -3,7 +3,7 @@ import type { KanjiMode } from "@/types/genki";
 
 type PageProps = {
   params: Promise<{ book: string; chapter: string }>;
-  searchParams: Promise<{ mode?: string }>;
+  searchParams: Promise<{ mode?: string; title?: string }>;
 };
 
 function cleanMode(mode?: string): KanjiMode {
@@ -11,26 +11,43 @@ function cleanMode(mode?: string): KanjiMode {
   return "all";
 }
 
+function databaseChapterFor(book: number, routeChapter: number) {
+  if (book === 2 && routeChapter >= 13) {
+    return routeChapter - 12;
+  }
+
+  return routeChapter;
+}
+
 export default async function KanjiPage({ params, searchParams }: PageProps) {
   const { book, chapter } = await params;
-  const { mode } = await searchParams;
+  const { mode, title } = await searchParams;
+
+  const bookNumber = Number(book);
+  const routeChapter = Number(chapter);
+  const databaseChapter = databaseChapterFor(bookNumber, routeChapter);
 
   const kanjiMode = cleanMode(mode);
 
-  const title =
-    kanjiMode === "vocab"
-      ? "Kanji Vocab"
-      : kanjiMode === "back"
-        ? "Kanji Back"
-        : "Kanji";
+  const defaultTitle =
+    databaseChapter === -1
+      ? "Katakana"
+      : databaseChapter === 0
+        ? "Numbers"
+        : kanjiMode === "vocab"
+          ? "Kanji Vocab"
+          : kanjiMode === "back"
+            ? "Kanji Back"
+            : "Kanji";
 
   return (
     <TypingTest
-      book={Number(book)}
-      chapter={Number(chapter)}
+      book={bookNumber}
+      chapter={databaseChapter}
+      routeChapter={routeChapter}
       wordType="kanji"
       kanjiMode={kanjiMode}
-      title={title}
+      title={title || defaultTitle}
     />
   );
 }

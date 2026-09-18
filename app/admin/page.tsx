@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AdminGlobalSearchModal, SearchIcon } from "@/components/AdminGlobalSearchModal";
+import {
+  AdminGlobalSearchModal,
+  SearchIcon,
+} from "@/components/AdminGlobalSearchModal";
 import { AdminGuard } from "@/components/AdminGuard";
 import { AdminWordForm } from "@/components/AdminWordForm";
 import { AdminWordsTable } from "@/components/AdminWordsTable";
@@ -29,6 +32,45 @@ export type AdminFilters = {
   kanjiMode: Exclude<KanjiMode, "all">;
   studyListId: string | null;
 };
+
+function chapterLabelFor(bookNumber: number, chapterNumber: number) {
+  if (bookNumber === 2 && chapterNumber >= 1) {
+    return `Chapter ${chapterNumber + 12}`;
+  }
+
+  if (chapterNumber === -1) {
+    return "Writing";
+  }
+
+  return `Chapter ${chapterNumber}`;
+}
+
+function typeLabelFor(
+  filters: AdminFilters,
+  selectedStudyList: StudyList | null
+) {
+  if (filters.chapterNumber === -1) {
+    if (filters.entryType === "vocab") return "Hiragana";
+    if (filters.entryType === "kanji") return "Katakana";
+    return selectedStudyList?.name || "Extra";
+  }
+
+  if (filters.chapterNumber === 0) {
+    if (filters.entryType === "vocab") return "Phrases";
+    if (filters.entryType === "kanji") return "Numbers";
+    return selectedStudyList?.name || "Extra";
+  }
+
+  if (filters.entryType === "vocab") {
+    return "Vocab";
+  }
+
+  if (filters.entryType === "extra") {
+    return selectedStudyList?.name || "Extra";
+  }
+
+  return filters.kanjiMode === "back" ? "Kanji Back" : "Kanji Vocab";
+}
 
 function AdminDashboard() {
   const [words, setWords] = useState<GenkiWord[]>([]);
@@ -178,16 +220,14 @@ function AdminDashboard() {
     filters.studyListId,
   ]);
 
-  const typeLabel =
-    filters.entryType === "vocab"
-      ? "Vocab"
-      : filters.entryType === "extra"
-        ? selectedStudyList?.name || "Extra"
-        : filters.kanjiMode === "back"
-          ? "Kanji Back"
-          : "Kanji Vocab";
+  const chapterLabel = chapterLabelFor(
+    filters.bookNumber,
+    filters.chapterNumber
+  );
 
-  const title = `Genki ${filters.bookNumber} · Chapter ${filters.chapterNumber} · ${typeLabel}`;
+  const typeLabel = typeLabelFor(filters, selectedStudyList);
+
+  const title = `Genki ${filters.bookNumber} · ${chapterLabel} · ${typeLabel}`;
 
   return (
     <PageShell className="overflow-hidden py-3 sm:py-4 lg:py-5">

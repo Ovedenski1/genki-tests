@@ -23,6 +23,11 @@ type LocalForm = {
   kanjiMode: Exclude<KanjiMode, "all">;
 };
 
+type ChapterOption = {
+  value: number;
+  label: string;
+};
+
 const emptyForm: LocalForm = {
   english: "",
   answers: [""],
@@ -33,6 +38,37 @@ const emptyForm: LocalForm = {
 
 const fieldClass = "h-12 px-4 py-2.5 text-sm";
 const selectClass = "h-12 px-4 py-2.5 text-sm";
+
+function chapterOptionsForBook(bookNumber: number): ChapterOption[] {
+  if (bookNumber === 2) {
+    return Array.from({ length: 11 }, (_, index) => {
+      const databaseChapter = index + 1;
+      const displayChapter = databaseChapter + 12;
+
+      return {
+        value: databaseChapter,
+        label: `Chapter ${displayChapter}`,
+      };
+    });
+  }
+
+  return [
+    { value: -1, label: "Writing" },
+    { value: 0, label: "Chapter 0" },
+    ...Array.from({ length: 12 }, (_, index) => ({
+      value: index + 1,
+      label: `Chapter ${index + 1}`,
+    })),
+  ];
+}
+
+function safeChapterForBook(bookNumber: number, chapterNumber: number) {
+  if (bookNumber === 2) {
+    return chapterNumber >= 1 && chapterNumber <= 11 ? chapterNumber : 1;
+  }
+
+  return chapterNumber >= -1 && chapterNumber <= 12 ? chapterNumber : 1;
+}
 
 function splitStoredAnswers(value: string | null | undefined) {
   if (!value) return [""];
@@ -64,6 +100,64 @@ function emptyFormKeepingMode(
   };
 }
 
+function entryTypeLabel(type: AdminEntryType, chapterNumber: number) {
+  if (chapterNumber === -1) {
+    if (type === "vocab") return "Hiragana";
+    if (type === "kanji") return "Katakana";
+    return "Extra";
+  }
+
+  if (chapterNumber === 0) {
+    if (type === "vocab") return "Phrases";
+    if (type === "kanji") return "Numbers";
+    return "Extra";
+  }
+
+  if (type === "vocab") return "Vocab";
+  if (type === "extra") return "Extra";
+  return "Kanji";
+}
+
+function questionPlaceholder(entryType: AdminEntryType, chapterNumber: number) {
+  if (chapterNumber === -1) {
+    return entryType === "kanji"
+      ? "Question, e.g. ka"
+      : "Question, e.g. a";
+  }
+
+  if (chapterNumber === 0) {
+    return entryType === "kanji"
+      ? "Question, e.g. one"
+      : "Question, e.g. good morning";
+  }
+
+  return entryType === "kanji" ? "Kanji, e.g. 先生" : "Question, e.g. teacher";
+}
+
+function answerPlaceholder(
+  entryType: AdminEntryType,
+  chapterNumber: number,
+  index: number
+) {
+  if (index > 0) return "Another correct answer";
+
+  if (chapterNumber === -1) {
+    return entryType === "kanji"
+      ? "Answer in katakana, e.g. カ"
+      : "Answer in hiragana, e.g. あ";
+  }
+
+  if (chapterNumber === 0) {
+    return entryType === "kanji"
+      ? "Answer, e.g. いち"
+      : "Answer, e.g. おはようございます";
+  }
+
+  return entryType === "kanji"
+    ? "Answer in hiragana, e.g. せんせい"
+    : "Answer, e.g. せんせい";
+}
+
 export function AdminWordForm({
   editing,
   filters,
@@ -88,6 +182,8 @@ export function AdminWordForm({
   const [error, setError] = useState("");
 
   const answers = form.answers || [""];
+  const isSpecialChapter =
+    filters.chapterNumber === -1 || filters.chapterNumber === 0;
 
   useEffect(() => {
     if (!editing) {
@@ -102,7 +198,13 @@ export function AdminWordForm({
       reading: editing.reading || "",
       kanjiMode: editing.kanji_mode === "back" ? "back" : "vocab",
     });
-  }, [editing, filters.entryType, filters.kanjiMode]);
+  }, [
+    editing,
+    filters.bookNumber,
+    filters.chapterNumber,
+    filters.entryType,
+    filters.kanjiMode,
+  ]);
 
   function update<K extends keyof LocalForm>(key: K, value: LocalForm[K]) {
     setForm((old) => ({ ...old, [key]: value }));
@@ -142,6 +244,18 @@ export function AdminWordForm({
     });
   }
 
+  function changeBook(nextBook: number) {
+    const nextChapter = safeChapterForBook(nextBook, filters.chapterNumber);
+
+    onFiltersChange({
+      ...filters,
+      bookNumber: nextBook,
+      chapterNumber: nextChapter,
+      entryType: filters.entryType === "extra" ? "vocab" : filters.entryType,
+      studyListId: null,
+    });
+  }
+
   function changeEntryType(nextType: AdminEntryType) {
     onFiltersChange({
       ...filters,
@@ -159,6 +273,21 @@ export function AdminWordForm({
     onFiltersChange({
       ...filters,
       kanjiMode: nextMode,
+    });
+  }
+
+  function changeChapter(nextChapter: number) {
+    const nextEntryType =
+      (nextChapter === -1 || nextChapter === 0) &&
+      filters.entryType === "extra"
+        ? "vocab"
+        : filters.entryType;
+
+    onFiltersChange({
+      ...filters,
+      chapterNumber: nextChapter,
+      entryType: nextEntryType,
+      studyListId: null,
     });
   }
 
@@ -195,7 +324,8 @@ export function AdminWordForm({
     setSaving(true);
     setError("");
 
-    const selectedKanjiMode = form.kanjiMode || filters.kanjiMode || "vocab";
+    const selectedKanjiMode =
+      isSpecialChapter ? "vocab" : form.kanjiMode || filters.kanjiMode || "vocab";
     const joinedAnswers = joinAnswers(form.answers);
 
     try {
@@ -234,7 +364,7 @@ export function AdminWordForm({
           hiragana: joinedAnswers,
           katakana: null,
           kanji: form.kanji,
-          reading: form.reading,
+          reading: isSpecialChapter ? null : form.reading,
           notes: null,
           study_list_id: null,
         };
@@ -268,13 +398,7 @@ export function AdminWordForm({
           <Select
             value={filters.bookNumber}
             className={selectClass}
-            onChange={(event) =>
-              onFiltersChange({
-                ...filters,
-                bookNumber: Number(event.target.value),
-                studyListId: null,
-              })
-            }
+            onChange={(event) => changeBook(Number(event.target.value))}
           >
             <option value={1}>Genki 1</option>
             <option value={2}>Genki 2</option>
@@ -283,32 +407,32 @@ export function AdminWordForm({
           <Select
             value={filters.chapterNumber}
             className={selectClass}
-            onChange={(event) =>
-              onFiltersChange({
-                ...filters,
-                chapterNumber: Number(event.target.value),
-                studyListId: null,
-              })
-            }
+            onChange={(event) => changeChapter(Number(event.target.value))}
           >
-            {Array.from({ length: 12 }, (_, index) => index + 1).map(
-              (chapter) => (
-                <option key={chapter} value={chapter}>
-                  Chapter {chapter}
-                </option>
-              )
-            )}
+            {chapterOptionsForBook(filters.bookNumber).map((chapter) => (
+              <option key={chapter.value} value={chapter.value}>
+                {chapter.label}
+              </option>
+            ))}
           </Select>
         </div>
 
         <Select
           value={filters.entryType}
           className={selectClass}
-          onChange={(event) => changeEntryType(event.target.value as AdminEntryType)}
+          onChange={(event) =>
+            changeEntryType(event.target.value as AdminEntryType)
+          }
         >
-          <option value="vocab">Vocab</option>
-          <option value="extra">Extra</option>
-          <option value="kanji">Kanji</option>
+          <option value="vocab">
+            {entryTypeLabel("vocab", filters.chapterNumber)}
+          </option>
+
+          {!isSpecialChapter ? <option value="extra">Extra</option> : null}
+
+          <option value="kanji">
+            {entryTypeLabel("kanji", filters.chapterNumber)}
+          </option>
         </Select>
 
         {filters.entryType === "extra" ? (
@@ -357,20 +481,25 @@ export function AdminWordForm({
 
         {filters.entryType === "kanji" ? (
           <>
-            <Select
-              value={form.kanjiMode}
-              className={selectClass}
-              onChange={(event) =>
-                changeKanjiMode(event.target.value as "vocab" | "back")
-              }
-            >
-              <option value="vocab">Kanji Vocab</option>
-              <option value="back">Kanji Back</option>
-            </Select>
+            {!isSpecialChapter ? (
+              <Select
+                value={form.kanjiMode}
+                className={selectClass}
+                onChange={(event) =>
+                  changeKanjiMode(event.target.value as "vocab" | "back")
+                }
+              >
+                <option value="vocab">Kanji Vocab</option>
+                <option value="back">Kanji Back</option>
+              </Select>
+            ) : null}
 
             <Input
               className={fieldClass}
-              placeholder="Kanji, e.g. 先生"
+              placeholder={questionPlaceholder(
+                filters.entryType,
+                filters.chapterNumber
+              )}
               value={form.kanji}
               onChange={(event) => update("kanji", event.target.value)}
               required
@@ -379,7 +508,10 @@ export function AdminWordForm({
         ) : (
           <Input
             className={fieldClass}
-            placeholder="Question, e.g. teacher"
+            placeholder={questionPlaceholder(
+              filters.entryType,
+              filters.chapterNumber
+            )}
             value={form.english}
             onChange={(event) => update("english", event.target.value)}
             required
@@ -391,15 +523,11 @@ export function AdminWordForm({
             <div key={index} className="flex gap-3">
               <Input
                 className={fieldClass}
-                placeholder={
-                  filters.entryType === "kanji"
-                    ? index === 0
-                      ? "Answer in hiragana, e.g. せんせい"
-                      : "Another correct answer"
-                    : index === 0
-                      ? "Answer, e.g. せんせい"
-                      : "Another correct answer"
-                }
+                placeholder={answerPlaceholder(
+                  filters.entryType,
+                  filters.chapterNumber,
+                  index
+                )}
                 value={answer}
                 onChange={(event) => updateAnswer(index, event.target.value)}
                 required={index === 0}
@@ -426,7 +554,7 @@ export function AdminWordForm({
           ))}
         </div>
 
-        {filters.entryType === "kanji" ? (
+        {filters.entryType === "kanji" && !isSpecialChapter ? (
           <Input
             className={fieldClass}
             placeholder="Reading / meaning for results"

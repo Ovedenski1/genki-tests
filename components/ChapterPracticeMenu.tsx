@@ -8,6 +8,30 @@ import type { StudyList } from "@/types/genki";
 
 type ModalMode = "vocab" | "kanji" | "extra" | null;
 
+function HiraganaIcon({ className = "" }: { className?: string }) {
+  return (
+    <span className={className} aria-hidden="true">
+      あ
+    </span>
+  );
+}
+
+function KatakanaIcon({ className = "" }: { className?: string }) {
+  return (
+    <span className={className} aria-hidden="true">
+      ア
+    </span>
+  );
+}
+
+function NumberIcon({ className = "" }: { className?: string }) {
+  return (
+    <span className={className} aria-hidden="true">
+      123
+    </span>
+  );
+}
+
 export function ChapterPracticeMenu({
   base,
   book,
@@ -21,6 +45,33 @@ export function ChapterPracticeMenu({
   const [pageReady, setPageReady] = useState(false);
   const [studyLists, setStudyLists] = useState<StudyList[]>([]);
 
+  const isWriting = chapter === -1;
+  const isChapterZero = chapter === 0;
+  const isSpecial = isWriting || isChapterZero;
+  const kanjiDisabled = book === 1 && !isSpecial && (chapter === 1 || chapter === 2);
+
+  const leftTitle = isWriting ? "Hiragana" : isChapterZero ? "Phrases" : "Vocab";
+
+  const rightTitle = isWriting
+    ? "Katakana"
+    : isChapterZero
+      ? "Numbers"
+      : "Kanji";
+
+  const leftDescription = isWriting
+    ? "Practice hiragana writing."
+    : isChapterZero
+      ? "Practice useful phrases."
+      : "Study vocabulary from this chapter.";
+
+  const rightDescription = isWriting
+    ? "Practice katakana writing."
+    : isChapterZero
+      ? "Practice numbers."
+      : kanjiDisabled
+        ? "No kanji for this chapter."
+        : "Study kanji from this chapter.";
+
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       setPageReady(true);
@@ -31,6 +82,11 @@ export function ChapterPracticeMenu({
 
   useEffect(() => {
     async function loadLists() {
+      if (isSpecial) {
+        setStudyLists([]);
+        return;
+      }
+
       try {
         const lists = await fetchStudyLists(book, chapter);
         setStudyLists(lists);
@@ -40,14 +96,65 @@ export function ChapterPracticeMenu({
     }
 
     loadLists();
-  }, [book, chapter]);
+  }, [book, chapter, isSpecial]);
 
   function openMobileModal(mode: Exclude<ModalMode, null>) {
+    if (isSpecial || kanjiDisabled) return;
+
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
     if (isMobile) {
       setModalMode(mode);
     }
+  }
+
+  function renderLeftIcon() {
+    if (isWriting) {
+      return (
+        <div className="home-book-float mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 border-white text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+          <HiraganaIcon className="text-4xl font-black leading-none sm:text-5xl" />
+        </div>
+      );
+    }
+
+    return (
+      <div className="home-book-float mx-auto flex h-12 w-12 items-center justify-center text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+        <OpenBookIcon className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16" />
+      </div>
+    );
+  }
+
+  function renderRightIcon(disabled = false) {
+    const iconColor = disabled ? "text-white/80" : "text-white";
+    const borderColor = disabled ? "border-white/70" : "border-white";
+
+    if (isWriting) {
+      return (
+        <div
+          className={`home-book-float mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 ${borderColor} ${iconColor} sm:h-14 sm:w-14 lg:h-16 lg:w-16`}
+        >
+          <KatakanaIcon className="text-4xl font-black leading-none sm:text-5xl" />
+        </div>
+      );
+    }
+
+    if (isChapterZero) {
+      return (
+        <div
+          className={`home-book-float mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 ${borderColor} ${iconColor} sm:h-14 sm:w-14 lg:h-16 lg:w-16`}
+        >
+          <NumberIcon className="text-2xl font-black leading-none sm:text-3xl" />
+        </div>
+      );
+    }
+
+    return (
+      <div
+        className={`home-book-float mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 ${borderColor} ${iconColor} sm:h-14 sm:w-14 lg:h-16 lg:w-16`}
+      >
+        <KanjiIcon className="text-4xl font-black leading-none sm:text-5xl" />
+      </div>
+    );
   }
 
   const cardAnimation = pageReady
@@ -64,55 +171,107 @@ export function ChapterPracticeMenu({
           className={`group/vocab relative h-full w-full transition-all duration-700 ease-out ${cardAnimation}`}
           style={{ transitionDelay: "220ms" }}
         >
-          <button
-            type="button"
-            onClick={() => openMobileModal("vocab")}
-            className="flex h-[220px] w-full flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#9bcc99] to-[#78b978] px-4 text-center text-white shadow-xl shadow-green-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[250px] lg:h-[285px]"
-          >
-            <div className="home-book-float mx-auto flex h-12 w-12 items-center justify-center text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
-              <OpenBookIcon className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16" />
-            </div>
+          {isSpecial ? (
+            <Link
+              href={`${base}/vocab?title=${encodeURIComponent(leftTitle)}`}
+              className="flex h-[220px] w-full flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#9bcc99] to-[#78b978] px-4 text-center text-white shadow-xl shadow-green-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[250px] lg:h-[285px]"
+            >
+              {renderLeftIcon()}
 
-            <h2 className="mt-5 text-3xl font-black sm:mt-6 sm:text-4xl">
-              Vocab
-            </h2>
+              <h2 className="mt-5 text-3xl font-black sm:mt-6 sm:text-4xl">
+                {leftTitle}
+              </h2>
 
-            <p className="mt-4 hidden max-w-[230px] text-base leading-snug text-white/90 sm:block lg:mt-6 lg:text-lg">
-              Study vocabulary from this chapter.
-            </p>
-          </button>
+              <p className="mt-4 hidden max-w-[230px] text-base leading-snug text-white/90 sm:block lg:mt-6 lg:text-lg">
+                {leftDescription}
+              </p>
+            </Link>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => openMobileModal("vocab")}
+                className="flex h-[220px] w-full flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#9bcc99] to-[#78b978] px-4 text-center text-white shadow-xl shadow-green-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[250px] lg:h-[285px]"
+              >
+                {renderLeftIcon()}
 
-          <DesktopVocabMenu
-            base={base}
-            studyLists={studyLists}
-            hasOneExtraList={hasOneExtraList}
-            hasManyExtraLists={hasManyExtraLists}
-          />
+                <h2 className="mt-5 text-3xl font-black sm:mt-6 sm:text-4xl">
+                  {leftTitle}
+                </h2>
+
+                <p className="mt-4 hidden max-w-[230px] text-base leading-snug text-white/90 sm:block lg:mt-6 lg:text-lg">
+                  {leftDescription}
+                </p>
+              </button>
+
+              <DesktopVocabMenu
+                base={base}
+                studyLists={studyLists}
+                hasOneExtraList={hasOneExtraList}
+                hasManyExtraLists={hasManyExtraLists}
+              />
+            </>
+          )}
         </div>
 
         <div
           className={`group/kanji relative h-full w-full transition-all duration-700 ease-out ${cardAnimation}`}
           style={{ transitionDelay: "340ms" }}
         >
-          <button
-            type="button"
-            onClick={() => openMobileModal("kanji")}
-            className="flex h-[220px] w-full flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-4 text-center text-white shadow-xl shadow-blue-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[250px] lg:h-[285px]"
-          >
-            <div className="home-book-float mx-auto flex h-12 w-12 items-center justify-center rounded-xl border-4 border-white text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
-              <KanjiIcon className="text-4xl font-black leading-none sm:text-5xl" />
-            </div>
+          {isSpecial ? (
+            <Link
+              href={`${base}/kanji?mode=vocab&title=${encodeURIComponent(
+                rightTitle
+              )}`}
+              className="flex h-[220px] w-full flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-4 text-center text-white shadow-xl shadow-blue-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[250px] lg:h-[285px]"
+            >
+              {renderRightIcon()}
 
-            <h2 className="mt-5 text-3xl font-black sm:mt-6 sm:text-4xl">
-              Kanji
-            </h2>
+              <h2 className="mt-5 text-3xl font-black sm:mt-6 sm:text-4xl">
+                {rightTitle}
+              </h2>
 
-            <p className="mt-4 hidden max-w-[230px] text-base leading-snug text-white/90 sm:block lg:mt-6 lg:text-lg">
-              Study kanji from this chapter.
-            </p>
-          </button>
+              <p className="mt-4 hidden max-w-[230px] text-base leading-snug text-white/90 sm:block lg:mt-6 lg:text-lg">
+                {rightDescription}
+              </p>
+            </Link>
+          ) : kanjiDisabled ? (
+            <button
+              type="button"
+              disabled
+              className="flex h-[220px] w-full cursor-not-allowed flex-col items-center justify-center rounded-xl bg-gradient-to-br from-slate-300 to-slate-400 px-4 text-center text-white/80 shadow-xl shadow-slate-300/40 sm:h-[250px] lg:h-[285px]"
+            >
+              {renderRightIcon(true)}
 
-          <DesktopKanjiMenu base={base} />
+              <h2 className="mt-5 text-3xl font-black sm:mt-6 sm:text-4xl">
+                {rightTitle}
+              </h2>
+
+              <p className="mt-4 hidden max-w-[230px] text-base leading-snug text-white/80 sm:block lg:mt-6 lg:text-lg">
+                {rightDescription}
+              </p>
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => openMobileModal("kanji")}
+                className="flex h-[220px] w-full flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-4 text-center text-white shadow-xl shadow-blue-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[250px] lg:h-[285px]"
+              >
+                {renderRightIcon()}
+
+                <h2 className="mt-5 text-3xl font-black sm:mt-6 sm:text-4xl">
+                  {rightTitle}
+                </h2>
+
+                <p className="mt-4 hidden max-w-[230px] text-base leading-snug text-white/90 sm:block lg:mt-6 lg:text-lg">
+                  {rightDescription}
+                </p>
+              </button>
+
+              <DesktopKanjiMenu base={base} />
+            </>
+          )}
         </div>
       </div>
 

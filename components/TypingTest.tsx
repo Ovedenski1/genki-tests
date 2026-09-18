@@ -55,6 +55,11 @@ function modeIndex(mode: InputMode) {
   return 2;
 }
 
+function chapterTitle(chapter: number) {
+  if (chapter === -1) return "Writing";
+  return `Chapter ${chapter}`;
+}
+
 function InputModeSwitch({
   inputMode,
   onChange,
@@ -100,6 +105,7 @@ function InputModeSwitch({
 export function TypingTest({
   book,
   chapter,
+  routeChapter = chapter,
   wordType,
   kanjiMode = "all",
   studyListId = null,
@@ -108,6 +114,7 @@ export function TypingTest({
 }: {
   book: number;
   chapter: number;
+  routeChapter?: number;
   wordType: WordType;
   kanjiMode?: KanjiMode;
   studyListId?: string | null;
@@ -129,8 +136,8 @@ export function TypingTest({
   const wrongSoundRef = useRef<HTMLAudioElement | null>(null);
   const skipSoundRef = useRef<HTMLAudioElement | null>(null);
   const switchSoundRef = useRef<HTMLAudioElement | null>(null);
-const shiftWasAloneRef = useRef(false);
-const segmentStartRef = useRef(0);
+  const shiftWasAloneRef = useRef(false);
+  const segmentStartRef = useRef(0);
 
   const current = queue[0];
 
@@ -404,7 +411,7 @@ const segmentStartRef = useRef(0);
       <PageShell className="py-4 sm:py-5">
         <div className="mx-auto max-w-5xl">
           <Link
-            href={`/genki/${book}/chapter/${chapter}`}
+            href={`/genki/${book}/chapter/${routeChapter}`}
             className="text-sm font-bold text-[#173763] hover:underline sm:text-base"
           >
             ← Back to Chapter
@@ -445,7 +452,7 @@ const segmentStartRef = useRef(0);
               </Button>
 
               <Link
-                href={`/genki/${book}/chapter/${chapter}`}
+                href={`/genki/${book}/chapter/${routeChapter}`}
                 className="rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-6 py-3 text-base font-black text-white shadow-lg shadow-blue-200/60"
               >
                 Back
@@ -478,7 +485,7 @@ const segmentStartRef = useRef(0);
     <PageShell className="py-3 sm:py-4">
       <div className="mx-auto max-w-4xl">
         <Link
-          href={`/genki/${book}/chapter/${chapter}`}
+          href={`/genki/${book}/chapter/${routeChapter}`}
           className="text-sm font-bold text-[#173763] hover:underline sm:text-base"
         >
           ← Back to Chapter
@@ -486,7 +493,7 @@ const segmentStartRef = useRef(0);
 
         <section className="mt-3 text-center sm:mt-4">
           <h1 className="text-4xl font-black tracking-wide text-[#173763] sm:text-5xl lg:text-[52px]">
-            Chapter {chapter} — {title}
+            {chapterTitle(routeChapter)} — {title}
           </h1>
 
           <p className="mt-1 text-base text-slate-600 sm:text-lg lg:text-xl">
@@ -547,35 +554,35 @@ const segmentStartRef = useRef(0);
               disabled={Boolean(feedback)}
               onChange={(event) => updateAnswer(event.target.value)}
               onKeyDown={(event) => {
-  if (event.nativeEvent.isComposing) return;
+                if (event.nativeEvent.isComposing) return;
 
-  if (event.key === "Shift" && !event.repeat) {
-    shiftWasAloneRef.current = true;
-    return;
-  }
+                if (event.key === "Shift" && !event.repeat) {
+                  shiftWasAloneRef.current = true;
+                  return;
+                }
 
-  if (event.shiftKey && event.key.length === 1) {
-    shiftWasAloneRef.current = false;
-  }
+                if (event.shiftKey && event.key.length === 1) {
+                  shiftWasAloneRef.current = false;
+                }
 
-  if (event.key === "Control" && !event.repeat) {
-    event.preventDefault();
-    skipWord();
-    return;
-  }
+                if (event.key === "Control" && !event.repeat) {
+                  event.preventDefault();
+                  skipWord();
+                  return;
+                }
 
-  if (event.key === "Enter") {
-    event.preventDefault();
-    checkAnswer();
-  }
-}}
-onKeyUp={(event) => {
-  if (event.key === "Shift" && shiftWasAloneRef.current) {
-    event.preventDefault();
-    shiftWasAloneRef.current = false;
-    cycleInputMode();
-  }
-}}
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  checkAnswer();
+                }
+              }}
+              onKeyUp={(event) => {
+                if (event.key === "Shift" && shiftWasAloneRef.current) {
+                  event.preventDefault();
+                  shiftWasAloneRef.current = false;
+                  cycleInputMode();
+                }
+              }}
               className="mt-5 text-lg sm:text-xl"
               placeholder={
                 inputMode === "english"

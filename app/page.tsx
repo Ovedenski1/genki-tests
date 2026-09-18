@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { OpenBookIcon } from "@/components/StudyIcons";
 
 export default function HomePage() {
-  const [mobileJojoActive, setMobileJojoActive] = useState(false);
   const [pageReady, setPageReady] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -16,18 +14,6 @@ export default function HomePage() {
 
     return () => cancelAnimationFrame(frame);
   }, []);
-
-  function handleGenki2Click() {
-    setMobileJojoActive(true);
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      setMobileJojoActive(false);
-    }, 1500);
-  }
 
   const titleAnimation = pageReady
     ? "translate-y-0 scale-100 opacity-100"
@@ -81,43 +67,16 @@ export default function HomePage() {
             className={`transition-all duration-700 ease-out ${cardAnimation}`}
             style={{ transitionDelay: "420ms" }}
           >
-            <div
-              role="button"
-              tabIndex={0}
-              aria-disabled="true"
-              onClick={handleGenki2Click}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  handleGenki2Click();
-                }
-              }}
-              className={`genki2-card relative flex h-[155px] cursor-not-allowed flex-col items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-[#9bcc99] to-[#78b978] px-4 text-white shadow-xl shadow-green-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[195px] lg:h-[215px] ${
-                mobileJojoActive ? "mobile-jojo-active" : ""
-              }`}
+            <Link
+              href="/genki/2/chapters"
+              className="flex h-[155px] flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#9bcc99] to-[#78b978] px-4 text-white shadow-xl shadow-green-300/50 transition hover:-translate-y-1 hover:brightness-105 sm:h-[195px] lg:h-[215px]"
             >
-              <div className="genki2-grey absolute inset-0 z-10 bg-slate-500/65 opacity-0 transition duration-300" />
+              <OpenBookIcon className="home-book-float mx-auto h-10 w-10 text-white drop-shadow sm:h-12 sm:w-12 lg:h-14 lg:w-14" />
 
-              <div className="genki2-content relative z-0 transition duration-300">
-                <OpenBookIcon className="home-book-float mx-auto h-10 w-10 text-white drop-shadow sm:h-12 sm:w-12 lg:h-14 lg:w-14" />
-
-                <div className="mt-4 text-2xl font-black sm:mt-5 sm:text-3xl lg:text-4xl">
-                  Genki 2
-                </div>
+              <div className="mt-4 text-2xl font-black sm:mt-5 sm:text-3xl lg:text-4xl">
+                Genki 2
               </div>
-
-              <div className="jojo-hover-wrap pointer-events-none absolute bottom-5 right-2 z-20 sm:bottom-7 sm:right-7">
-                <div className="text-right font-black uppercase leading-none text-[#111827] drop-shadow-sm">
-                  <p className="text-[10px] tracking-[0.25em] sm:text-lg">
-                    つづく
-                  </p>
-
-                  <p className="mt-2 whitespace-nowrap text-[10px] tracking-wide sm:mt-3 sm:text-2xl lg:text-3xl">
-                    To Be Continued
-                  </p>
-                </div>
-              </div>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
