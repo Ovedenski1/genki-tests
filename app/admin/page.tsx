@@ -5,6 +5,10 @@ import {
   AdminGlobalSearchModal,
   SearchIcon,
 } from "@/components/AdminGlobalSearchModal";
+import {
+  AdminKanjiBackModal,
+  KanjiBackIcon,
+} from "@/components/AdminKanjiBackModal";
 import { AdminGuard } from "@/components/AdminGuard";
 import { AdminWordForm } from "@/components/AdminWordForm";
 import { AdminWordsTable } from "@/components/AdminWordsTable";
@@ -77,6 +81,7 @@ function AdminDashboard() {
   const [studyLists, setStudyLists] = useState<StudyList[]>([]);
   const [editing, setEditing] = useState<GenkiWord | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [kanjiBackOpen, setKanjiBackOpen] = useState(false);
 
   const [filters, setFilters] = useState<AdminFilters>({
     bookNumber: 1,
@@ -255,6 +260,15 @@ function AdminDashboard() {
 
             <Button
               variant="secondary"
+              onClick={() => setKanjiBackOpen(true)}
+              className="flex items-center gap-2 px-5 py-3 text-xs sm:text-sm"
+            >
+              <KanjiBackIcon className="text-base font-black leading-none" />
+              Kanji
+            </Button>
+
+            <Button
+              variant="secondary"
               onClick={signOut}
               className="shrink-0 px-5 py-3 text-xs sm:text-sm"
             >
@@ -307,6 +321,11 @@ function AdminDashboard() {
         open={searchOpen}
         onClose={() => setSearchOpen(false)}
         onOpenResult={handleOpenSearchResult}
+      />
+
+      <AdminKanjiBackModal
+        open={kanjiBackOpen}
+        onClose={() => setKanjiBackOpen(false)}
       />
     </PageShell>
   );

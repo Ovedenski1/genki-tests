@@ -45,22 +45,31 @@ function CloseIcon({ className = "" }: { className?: string }) {
   );
 }
 
+function displayChapter(bookNumber: number, chapterNumber: number) {
+  if (bookNumber === 2 && chapterNumber >= 1) {
+    return chapterNumber + 12;
+  }
+
+  return chapterNumber;
+}
+
 function locationText(result: AdminWordSearchResult) {
   const word = result.word;
+  const shownChapter = displayChapter(word.book_number, word.chapter_number);
 
   if (word.word_type === "kanji") {
     const mode = word.kanji_mode === "back" ? "Kanji Back" : "Kanji Vocab";
 
-    return `Genki ${word.book_number} · Chapter ${word.chapter_number} · ${mode}`;
+    return `Genki ${word.book_number} · Chapter ${shownChapter} · ${mode}`;
   }
 
   if (word.study_list_id) {
-    return `Genki ${word.book_number} · Chapter ${
-      word.chapter_number
-    } · Extra · ${result.studyList?.name || "Unknown list"}`;
+    return `Genki ${word.book_number} · Chapter ${shownChapter} · Extra · ${
+      result.studyList?.name || "Unknown list"
+    }`;
   }
 
-  return `Genki ${word.book_number} · Chapter ${word.chapter_number} · Main Vocab`;
+  return `Genki ${word.book_number} · Chapter ${shownChapter} · Main Vocab`;
 }
 
 function mainLabel(word: GenkiWord) {

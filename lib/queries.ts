@@ -142,6 +142,24 @@ export async function searchAdminWords(value: string) {
   })) as AdminWordSearchResult[];
 }
 
+export async function fetchAllKanjiBackWords() {
+  const supabase = createSupabaseBrowserClient();
+
+  const { data, error } = await supabase
+    .from("genki_words")
+    .select("*")
+    .eq("word_type", "kanji")
+    .eq("kanji_mode", "back")
+    .order("book_number", { ascending: true })
+    .order("chapter_number", { ascending: true })
+    .order("created_at", { ascending: true })
+    .limit(3000);
+
+  if (error) throw error;
+
+  return (data || []) as GenkiWord[];
+}
+
 export async function fetchWords(
   book: number,
   chapter: number,
