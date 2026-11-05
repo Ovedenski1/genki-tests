@@ -1,10 +1,22 @@
+
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { searchAdminWords } from "@/lib/queries";
-import type { AdminWordSearchResult, GenkiWord } from "@/types/genki";
+import {
+  CommentIcon,
+  RichNoteDisplay,
+} from "@/components/RichNoteEditor";
+import type {
+  AdminWordSearchResult,
+  GenkiWord,
+} from "@/types/genki";
 
-export function SearchIcon({ className = "" }: { className?: string }) {
+export function SearchIcon({
+  className = "",
+}: {
+  className?: string;
+}) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -27,7 +39,11 @@ export function SearchIcon({ className = "" }: { className?: string }) {
   );
 }
 
-function CloseIcon({ className = "" }: { className?: string }) {
+function CloseIcon({
+  className = "",
+}: {
+  className?: string;
+}) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -45,8 +61,14 @@ function CloseIcon({ className = "" }: { className?: string }) {
   );
 }
 
-function displayChapter(bookNumber: number, chapterNumber: number) {
-  if (bookNumber === 2 && chapterNumber >= 1) {
+function displayChapter(
+  bookNumber: number,
+  chapterNumber: number
+) {
+  if (
+    bookNumber === 2 &&
+    chapterNumber >= 1
+  ) {
     return chapterNumber + 12;
   }
 
@@ -55,17 +77,25 @@ function displayChapter(bookNumber: number, chapterNumber: number) {
 
 function locationText(result: AdminWordSearchResult) {
   const word = result.word;
-  const shownChapter = displayChapter(word.book_number, word.chapter_number);
+
+  const shownChapter = displayChapter(
+    word.book_number,
+    word.chapter_number
+  );
 
   if (word.word_type === "kanji") {
-    const mode = word.kanji_mode === "back" ? "Kanji Back" : "Kanji Vocab";
+    const mode =
+      word.kanji_mode === "back"
+        ? "Kanji Back"
+        : "Kanji Vocab";
 
     return `Genki ${word.book_number} · Chapter ${shownChapter} · ${mode}`;
   }
 
   if (word.study_list_id) {
     return `Genki ${word.book_number} · Chapter ${shownChapter} · Extra · ${
-      result.studyList?.name || "Unknown list"
+      result.studyList?.name ||
+      "Unknown list"
     }`;
   }
 
@@ -74,16 +104,25 @@ function locationText(result: AdminWordSearchResult) {
 
 function mainLabel(word: GenkiWord) {
   if (word.word_type === "kanji") {
-    return word.kanji || word.english || "Untitled";
+    return (
+      word.kanji ||
+      word.english ||
+      "Untitled"
+    );
   }
 
   return word.english || "Untitled";
 }
 
 function secondLabel(word: GenkiWord) {
-  const parts = [word.japanese, word.reading].filter(Boolean);
+  const parts = [
+    word.japanese,
+    word.reading,
+  ].filter(Boolean);
 
-  return parts.length > 0 ? parts.join(" · ") : "—";
+  return parts.length > 0
+    ? parts.join(" · ")
+    : "—";
 }
 
 export function AdminGlobalSearchModal({
@@ -93,16 +132,24 @@ export function AdminGlobalSearchModal({
 }: {
   open: boolean;
   onClose: () => void;
-  onOpenResult: (result: AdminWordSearchResult) => void;
+  onOpenResult: (
+    result: AdminWordSearchResult
+  ) => void;
 }) {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<AdminWordSearchResult[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [results, setResults] =
+    useState<AdminWordSearchResult[]>([]);
+  const [loading, setLoading] =
+    useState(false);
   const [error, setError] = useState("");
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef =
+    useRef<HTMLInputElement | null>(null);
 
-  const cleanQuery = useMemo(() => query.trim(), [query]);
+  const cleanQuery = useMemo(
+    () => query.trim(),
+    [query]
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -115,15 +162,24 @@ export function AdminGlobalSearchModal({
   useEffect(() => {
     if (!open) return;
 
-    function closeOnEscape(event: KeyboardEvent) {
+    function closeOnEscape(
+      event: KeyboardEvent
+    ) {
       if (event.key === "Escape") {
         onClose();
       }
     }
 
-    window.addEventListener("keydown", closeOnEscape);
+    window.addEventListener(
+      "keydown",
+      closeOnEscape
+    );
 
-    return () => window.removeEventListener("keydown", closeOnEscape);
+    return () =>
+      window.removeEventListener(
+        "keydown",
+        closeOnEscape
+      );
   }, [open, onClose]);
 
   useEffect(() => {
@@ -138,31 +194,37 @@ export function AdminGlobalSearchModal({
 
     let cancelled = false;
 
-    const timer = window.setTimeout(async () => {
-      setLoading(true);
-      setError("");
+    const timer = window.setTimeout(
+      async () => {
+        setLoading(true);
+        setError("");
 
-      try {
-        const data = await searchAdminWords(cleanQuery);
+        try {
+          const data =
+            await searchAdminWords(
+              cleanQuery
+            );
 
-        if (!cancelled) {
-          setResults(data);
+          if (!cancelled) {
+            setResults(data);
+          }
+        } catch (caughtError) {
+          if (!cancelled) {
+            setError(
+              caughtError instanceof Error
+                ? caughtError.message
+                : "Could not search words."
+            );
+            setResults([]);
+          }
+        } finally {
+          if (!cancelled) {
+            setLoading(false);
+          }
         }
-      } catch (caughtError) {
-        if (!cancelled) {
-          setError(
-            caughtError instanceof Error
-              ? caughtError.message
-              : "Could not search words."
-          );
-          setResults([]);
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    }, 250);
+      },
+      250
+    );
 
     return () => {
       cancelled = true;
@@ -176,7 +238,10 @@ export function AdminGlobalSearchModal({
     <div
       className="fixed inset-0 z-[120] flex items-center justify-center bg-[#173763]/35 px-4 backdrop-blur-sm"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) {
+        if (
+          event.target ===
+          event.currentTarget
+        ) {
           onClose();
         }
       }}
@@ -210,7 +275,11 @@ export function AdminGlobalSearchModal({
             <input
               ref={inputRef}
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) =>
+                setQuery(
+                  event.target.value
+                )
+              }
               placeholder="Search English, Japanese, kanji, reading..."
               className="h-12 w-full rounded-xl border border-blue-200 bg-white/90 pl-12 pr-4 text-sm font-bold text-[#173763] outline-none transition placeholder:text-slate-400 focus:border-[#6d94d2] focus:ring-4 focus:ring-blue-200/70"
             />
@@ -235,36 +304,64 @@ export function AdminGlobalSearchModal({
               </div>
             ) : (
               <div className="grid gap-3">
-                {results.map((result) => (
-                  <div
-                    key={result.word.id}
-                    className="rounded-xl border border-slate-100 bg-white p-4 shadow-md shadow-slate-200/60"
-                  >
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="min-w-0">
-                        <p className="break-words text-lg font-black text-[#173763]">
-                          {mainLabel(result.word)}
-                        </p>
+                {results.map(
+                  (result) => (
+                    <div
+                      key={
+                        result.word.id
+                      }
+                      className="rounded-xl border border-slate-100 bg-white p-4 shadow-md shadow-slate-200/60"
+                    >
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="min-w-0 flex-1">
+                          <p className="break-words text-lg font-black text-[#173763]">
+                            {mainLabel(
+                              result.word
+                            )}
+                          </p>
 
-                        <p className="mt-0.5 break-words text-sm font-bold text-slate-500">
-                          {secondLabel(result.word)}
-                        </p>
+                          <p className="mt-0.5 break-words text-sm font-bold text-slate-500">
+                            {secondLabel(
+                              result.word
+                            )}
+                          </p>
 
-                        <p className="mt-2 break-words text-xs font-black uppercase tracking-[0.14em] text-[#6d94d2]">
-                          {locationText(result)}
-                        </p>
+                          <p className="mt-2 break-words text-xs font-black uppercase tracking-[0.14em] text-[#6d94d2]">
+                            {locationText(
+                              result
+                            )}
+                          </p>
+
+                          {result.word.notes?.trim() ? (
+                            <div className="mt-2 flex items-start gap-2">
+                              <CommentIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#6d94d2]" />
+
+                              <p className="min-w-0 break-words text-sm font-semibold leading-relaxed text-slate-600">
+                                <RichNoteDisplay
+                                  value={
+                                    result.word.notes
+                                  }
+                                />
+                              </p>
+                            </div>
+                          ) : null}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onOpenResult(
+                              result
+                            )
+                          }
+                          className="shrink-0 rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-4 py-2.5 text-sm font-black text-white shadow-lg shadow-blue-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
+                        >
+                          Open
+                        </button>
                       </div>
-
-                      <button
-                        type="button"
-                        onClick={() => onOpenResult(result)}
-                        className="shrink-0 rounded-xl bg-gradient-to-br from-[#92b2e8] to-[#6d94d2] px-4 py-2.5 text-sm font-black text-white shadow-lg shadow-blue-200/70 transition hover:-translate-y-0.5 hover:brightness-105"
-                      >
-                        Open
-                      </button>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             )}
           </div>
