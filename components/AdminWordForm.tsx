@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
@@ -16,6 +15,7 @@ import type {
   AdminEntryType,
   GenkiWord,
   GenkiWordInsert,
+  GrammarType,
   KanjiMode,
   StudyList,
 } from "@/types/genki";
@@ -27,6 +27,7 @@ type LocalForm = {
   reading: string;
   kanjiMode: Exclude<KanjiMode, "all">;
   notes: string;
+  grammarType: GrammarType | null;
 };
 
 type ChapterOption = {
@@ -41,10 +42,19 @@ const emptyForm: LocalForm = {
   reading: "",
   kanjiMode: "vocab",
   notes: "",
+  grammarType: null,
 };
 
 const fieldClass = "h-12 px-4 py-2.5 text-sm";
 const selectClass = "h-12 px-4 py-2.5 text-sm";
+
+const grammarOptions: { value: GrammarType; label: string }[] = [
+  { value: "ru", label: "Ru" },
+  { value: "u", label: "U" },
+  { value: "irr", label: "Irr" },
+  { value: "i_adj", label: "い-adj" },
+  { value: "na_adj", label: "な-adj" },
+];
 
 function chapterOptionsForBook(bookNumber: number): ChapterOption[] {
   if (bookNumber === 2) {
@@ -111,6 +121,7 @@ function emptyFormKeepingMode(
     reading: "",
     kanjiMode: kanjiMode || "vocab",
     notes: "",
+    grammarType: null,
   };
 }
 
@@ -237,6 +248,7 @@ export function AdminWordForm({
           ? "back"
           : "vocab",
       notes: editing.notes || "",
+      grammarType: editing.grammar_type || null,
     });
 
     setShowComment(Boolean(editing.notes?.trim()));
@@ -380,6 +392,13 @@ export function AdminWordForm({
     }
   }
 
+  function toggleGrammarType(type: GrammarType) {
+    setForm((current) => ({
+      ...current,
+      grammarType: current.grammarType === type ? null : type,
+    }));
+  }
+
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -423,6 +442,7 @@ export function AdminWordForm({
           kanji: null,
           reading: null,
           notes: savedComment,
+          grammar_type: form.grammarType,
           study_list_id:
             filters.entryType === "extra"
               ? filters.studyListId
@@ -444,6 +464,7 @@ export function AdminWordForm({
               ? null
               : form.reading,
           notes: savedComment,
+          grammar_type: form.grammarType,
           study_list_id: null,
         };
       }
@@ -716,6 +737,29 @@ export function AdminWordForm({
           />
         ) : null}
 
+        {/* Optional grammar classification, independent from rich notes */}
+        <div className="rounded-xl border border-blue-100 bg-blue-50/40 px-3 py-3">
+          <p className="mb-2 text-xs font-black uppercase tracking-wider text-[#6d94d2]">
+            Grammar type (optional)
+          </p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {grammarOptions.map((option) => (
+              <label
+                key={option.value}
+                className="flex cursor-pointer items-center gap-1.5 text-sm font-bold text-[#173763]"
+              >
+                <input
+                  type="checkbox"
+                  checked={form.grammarType === option.value}
+                  onChange={() => toggleGrammarType(option.value)}
+                  className="h-4 w-4 cursor-pointer accent-[#78b978]"
+                />
+                {option.label}
+              </label>
+            ))}
+          </div>
+        </div>
+
         <div className="flex items-center">
           <button
             type="button"
@@ -761,7 +805,7 @@ export function AdminWordForm({
 
           <p className="mt-2 text-xs font-semibold text-slate-500">
             Select text to color or format it.
-            Comments appear in admin search,
+            Comments and grammar types appear in admin search,
             not in tests.
           </p>
         </div>

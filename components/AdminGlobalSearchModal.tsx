@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -10,6 +9,7 @@ import {
 import type {
   AdminWordSearchResult,
   GenkiWord,
+  GrammarType,
 } from "@/types/genki";
 
 export function SearchIcon({
@@ -124,6 +124,24 @@ function secondLabel(word: GenkiWord) {
     ? parts.join(" · ")
     : "—";
 }
+
+
+function GrammarTypeTag({ type }: { type: GrammarType }) {
+  const labels: Record<GrammarType, string> = {
+    ru: "Ru verb",
+    u: "U verb",
+    irr: "Irregular verb",
+    i_adj: "い-adjective",
+    na_adj: "な-adjective",
+  };
+
+  return (
+    <span className="shrink-0 text-[14px] font-black tracking-[0.04em] text-slate-600">
+      {labels[type]}
+    </span>
+  );
+}
+
 
 export function AdminGlobalSearchModal({
   open,
@@ -326,11 +344,14 @@ export function AdminGlobalSearchModal({
                             )}
                           </p>
 
-                          <p className="mt-2 break-words text-xs font-black uppercase tracking-[0.14em] text-[#6d94d2]">
-                            {locationText(
-                              result
-                            )}
-                          </p>
+                          <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                            <p className="min-w-0 break-words text-xs font-black uppercase tracking-[0.14em] text-[#6d94d2]">
+                              {locationText(result)}
+                            </p>
+                            {result.word.grammar_type ? (
+                              <GrammarTypeTag type={result.word.grammar_type} />
+                            ) : null}
+                          </div>
 
                           {result.word.notes?.trim() ? (
                             <div className="mt-2 flex items-start gap-2">

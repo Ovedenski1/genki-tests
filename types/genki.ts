@@ -5,18 +5,23 @@ export type KanjiMode = "vocab" | "back" | "all";
 
 export type AdminEntryType = "vocab" | "extra" | "kanji";
 
+export type GrammarType = "ru" | "u" | "irr" | "i_adj" | "na_adj";
+
 export type GenkiWord = Database["public"]["Tables"]["genki_words"]["Row"] & {
   study_list_id?: string | null;
+  grammar_type?: GrammarType | null;
 };
 
 export type GenkiWordInsert =
   Database["public"]["Tables"]["genki_words"]["Insert"] & {
     study_list_id?: string | null;
+    grammar_type?: GrammarType | null;
   };
 
 export type GenkiWordUpdate =
   Database["public"]["Tables"]["genki_words"]["Update"] & {
     study_list_id?: string | null;
+    grammar_type?: GrammarType | null;
   };
 
 export type StudyList = {
