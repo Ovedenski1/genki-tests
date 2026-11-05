@@ -6,12 +6,40 @@ import { useEffect, useRef, useState } from "react";
 const PREFIX = "__pokotoba_rich_note_v1__:";
 
 const COLORS = [
-  { name: "Black", value: "#000000" },
-  { name: "Red", value: "#e11d48" },
-  { name: "Green", value: "#16a34a" },
-  { name: "Blue", value: "#2563eb" },
-  { name: "Yellow", value: "#ca8a04" },
-  { name: "Purple", value: "#9333ea" },
+  { name: "Black (Reset)", value: "#000000" },
+
+  // に - Green
+  { name: "に (ni) - Green", value: "#16a34a" },
+
+  // が - Wine
+  { name: "が (ga) - Wine", value: "#7f1d1d" },
+
+  // を - Purple
+  { name: "を (wo) - Purple", value: "#9333ea" },
+
+  // で - Yellow
+  { name: "で (de) - Yellow", value: "#ca8a04" },
+
+  // へ - Blue
+  { name: "へ (e) - Blue", value: "#2563eb" },
+
+  // は - Red
+  { name: "は (wa) - Red", value: "#e11d48" },
+
+  // と - Pink
+  { name: "と (to) - Pink", value: "#db2777" },
+
+  // も - Lime
+  { name: "も (mo) - Lime", value: "#4d7c0f" },
+
+  // の - Orange
+  { name: "の (no) - Orange", value: "#ea580c" },
+
+  // から - Ocean Blue
+  { name: "から (kara) - Ocean Blue", value: "#0e7490" },
+
+  // まで - Coral
+  { name: "まで (made) - Coral", value: "#b45353" },
 ] as const;
 
 export function CommentIcon({
@@ -202,7 +230,9 @@ export function RichNoteEditor({
   onChange: (value: string) => void;
 }) {
   const editorRef = useRef<HTMLDivElement | null>(null);
+
   const [hasText, setHasText] = useState(false);
+
   const [activeColor, setActiveColor] = useState<string | null>(
     null
   );
@@ -260,6 +290,8 @@ export function RichNoteEditor({
   return (
     <div className="overflow-hidden rounded-xl border border-blue-200 bg-white">
       <div className="flex flex-wrap items-center gap-2 border-b border-blue-100 bg-blue-50/60 p-2.5">
+
+        {/* Bold, Italic, Underline */}
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -297,7 +329,8 @@ export function RichNoteEditor({
 
         <div className="mx-1 h-6 w-px bg-blue-200" />
 
-        <div className="flex items-center gap-2">
+        {/* All particle colors + Black */}
+        <div className="flex flex-wrap items-center gap-2">
           {COLORS.map((color) => (
             <button
               key={color.name}
@@ -309,7 +342,7 @@ export function RichNoteEditor({
               }}
               title={color.name}
               aria-label={`${color.name} text`}
-              className={`h-7 w-7 rounded-full border-2 border-white shadow-sm transition hover:scale-110 ${
+              className={`h-7 w-7 shrink-0 rounded-full border-2 border-white shadow-sm transition hover:scale-110 ${
                 activeColor === color.value
                   ? "ring-2 ring-[#173763] ring-offset-1"
                   : ""
@@ -322,6 +355,7 @@ export function RichNoteEditor({
         </div>
       </div>
 
+      {/* Comment editor */}
       <div className="relative">
         {!hasText ? (
           <p className="pointer-events-none absolute left-4 top-3 text-sm font-medium text-slate-400">
