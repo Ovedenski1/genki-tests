@@ -40,6 +40,10 @@ const COLORS = [
 
   // まで - Coral
   { name: "まで (made) - Coral", value: "#b45353" },
+
+  // Extra colors
+  { name: "Deep Navy Blue", value: "#0a1744" },
+  { name: "Teal", value: "#008080" },
 ] as const;
 
 export function CommentIcon({
